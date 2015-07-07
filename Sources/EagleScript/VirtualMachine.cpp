@@ -2461,7 +2461,7 @@ namespace EagleVirtualMachine
 		for(listIterator = m_functionTable.begin(); listIterator != m_functionTable.end(); ++listIterator)
 		{
 			//message(INT_TO_STRING(i) + " : " + (string)functionTable[i].name);
-			if(stricmp((*listIterator).name.c_str(), name) == 0) return index;
+			if(_stricmp((*listIterator).name.c_str(), name) == 0) return index;
 
 			index++;
 		}

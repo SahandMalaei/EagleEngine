@@ -135,22 +135,22 @@ namespace EagleScriptCompiler
 		newFunction->prototypeParameterCount = 0;
 		newFunction->localDataSize = 0;
 
-		if(stricmp(name, ES_INITIALIZE_FUNCTION_NAME) == 0)
+		if(_stricmp(name, ES_INITIALIZE_FUNCTION_NAME) == 0)
 		{
 			scriptHeader.isInitializeFunctionPresent = 1;
 			scriptHeader.initializeFunctionIndex = newFunction->index;
 		}
-		else if(stricmp(name, ES_UPDATE_FUNCTION_NAME) == 0)
+		else if(_stricmp(name, ES_UPDATE_FUNCTION_NAME) == 0)
 		{
 			scriptHeader.isUpdateFunctionPresent = 1;
 			scriptHeader.updateFunctionIndex = newFunction->index;
 		}
-		if(stricmp(name, ES_RENDER_FUNCTION_NAME) == 0)
+		if(_stricmp(name, ES_RENDER_FUNCTION_NAME) == 0)
 		{
 			scriptHeader.isRenderFunctionPresent = 1;
 			scriptHeader.renderFunctionIndex = newFunction->index;
 		}
-		else if(stricmp(name, ES_END_FUNCTION_NAME) == 0)
+		else if(_stricmp(name, ES_END_FUNCTION_NAME) == 0)
 		{
 			scriptHeader.isEndFunctionPresent = 1;
 			scriptHeader.endFunctionIndex = newFunction->index;
@@ -195,7 +195,7 @@ namespace EagleScriptCompiler
 
 			if(currentFunction)
 			{
-				if(stricmp(currentFunction->name, name) == 0)
+				if(_stricmp(currentFunction->name, name) == 0)
 				{
 					return currentFunction;
 				}

@@ -229,7 +229,7 @@ namespace EagleAssembler
 		if(instructionIndex == MAX_INSTRUCTION_LOOKUP_COUNT) return -1;
 
 		strcpy(instructionTable[instructionIndex].mnemonic, mnemonic);
-		strupr(instructionTable[instructionIndex].mnemonic);
+		_strupr(instructionTable[instructionIndex].mnemonic);
 
 		instructionTable[instructionIndex].opcode = opcode;
 		instructionTable[instructionIndex].operandCount = operandCount;
@@ -250,7 +250,7 @@ namespace EagleAssembler
 		if(mnemonic[0] == '\0') return 0;
 		char mnemonicUpper[MAX_INSTRUCTION_MNEMONIC_LENGTH + 1];
 		strcpy(mnemonicUpper, mnemonic);
-		strupr(mnemonicUpper);
+		_strupr(mnemonicUpper);
 
 		for(int i = 0; i < MAX_INSTRUCTION_LOOKUP_COUNT; ++i)
 		{
@@ -703,7 +703,7 @@ namespace EagleAssembler
 
 		char currentLexemeUpper[EASM_MAX_IDENTIFIER_LENGTH];
 		strcpy(currentLexemeUpper, lexer.currentLexeme);
-		strupr(currentLexemeUpper);
+		_strupr(currentLexemeUpper);
 
 		if(strcmp(currentLexemeUpper, "SETSTACKSIZE") == 0) lexer.currentToken = TOKEN_TYPE_SET_STACK_SIZE;
 		if(strcmp(currentLexemeUpper, "VARIABLE") == 0) lexer.currentToken = TOKEN_TYPE_VARIABLE;
@@ -901,25 +901,25 @@ namespace EagleAssembler
 					int functionIndex = addToFunctionTable(functionName, entryPoint);
 					if(functionIndex == -1) throwCodeError("Function redefinition", lexer.currentLine);
 
-					if(stricmp(functionName, ES_INITIALIZE_FUNCTION_NAME) == 0)
+					if(_stricmp(functionName, ES_INITIALIZE_FUNCTION_NAME) == 0)
 					{
 						scriptHeader.isInitializeFunctionPresent = 1;
 						scriptHeader.initializeFunctionIndex = functionIndex;
 					}
 
-					if(stricmp(functionName, ES_UPDATE_FUNCTION_NAME) == 0)
+					if(_stricmp(functionName, ES_UPDATE_FUNCTION_NAME) == 0)
 					{
 						scriptHeader.isUpdateFunctionPresent = 1;
 						scriptHeader.updateFunctionIndex = functionIndex;
 					}
 
-					if(stricmp(functionName, ES_RENDER_FUNCTION_NAME) == 0)
+					if(_stricmp(functionName, ES_RENDER_FUNCTION_NAME) == 0)
 					{
 						scriptHeader.isRenderFunctionPresent = 1;
 						scriptHeader.renderFunctionIndex = functionIndex;
 					}
 
-					if(stricmp(functionName, ES_END_FUNCTION_NAME) == 0)
+					if(_stricmp(functionName, ES_END_FUNCTION_NAME) == 0)
 					{
 						scriptHeader.isEndFunctionPresent = 1;
 						scriptHeader.endFunctionIndex = functionIndex;
@@ -1215,8 +1215,8 @@ namespace EagleAssembler
 					instructionStream[currentInstructionIndex].opcode = currentInstruction.opcode;
 					instructionStream[currentInstructionIndex].operandCount = currentInstruction.operandCount;
 
-					Operand *operandList;
-					if(strcmp(strupr(lexer.currentLexeme), "CALL") == 0)
+					Operand *operandList = 0;
+					if(strcmp(_strupr(lexer.currentLexeme), "CALL") == 0)
 					{
 					}
 					else

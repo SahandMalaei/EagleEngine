@@ -587,20 +587,20 @@ namespace EagleScriptCompiler
 		case ES_LEXER_STATE_IDENTIFIER:
 			tokenType = ES_TOKEN_TYPE_IDENTIFIER;
 
-			if(stricmp(currentLexerState.currentLexeme, "Variable") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_VARIABLE;
-			if(stricmp(currentLexerState.currentLexeme, "True") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_TRUE;
-			if(stricmp(currentLexerState.currentLexeme, "False") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_FALSE;
-			if(stricmp(currentLexerState.currentLexeme, "If") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_IF;
-			if(stricmp(currentLexerState.currentLexeme, "Else") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_ELSE;
-			if(stricmp(currentLexerState.currentLexeme, "Switch") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_SWITCH;
-			if(stricmp(currentLexerState.currentLexeme, "Case") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_CASE;
-			if(stricmp(currentLexerState.currentLexeme, "Default") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_DEFAULT;
-			if(stricmp(currentLexerState.currentLexeme, "Break") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_BREAK;
-			if(stricmp(currentLexerState.currentLexeme, "Continue") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_CONTINUE;
-			if(stricmp(currentLexerState.currentLexeme, "For") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_FOR;
-			if(stricmp(currentLexerState.currentLexeme, "While") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_WHILE;
-			if(stricmp(currentLexerState.currentLexeme, "Function") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_FUNCTION;
-			if(stricmp(currentLexerState.currentLexeme, "Return") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_RETURN;
+			if(_stricmp(currentLexerState.currentLexeme, "Variable") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_VARIABLE;
+			if(_stricmp(currentLexerState.currentLexeme, "True") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_TRUE;
+			if(_stricmp(currentLexerState.currentLexeme, "False") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_FALSE;
+			if(_stricmp(currentLexerState.currentLexeme, "If") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_IF;
+			if(_stricmp(currentLexerState.currentLexeme, "Else") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_ELSE;
+			if(_stricmp(currentLexerState.currentLexeme, "Switch") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_SWITCH;
+			if(_stricmp(currentLexerState.currentLexeme, "Case") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_CASE;
+			if(_stricmp(currentLexerState.currentLexeme, "Default") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_DEFAULT;
+			if(_stricmp(currentLexerState.currentLexeme, "Break") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_BREAK;
+			if(_stricmp(currentLexerState.currentLexeme, "Continue") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_CONTINUE;
+			if(_stricmp(currentLexerState.currentLexeme, "For") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_FOR;
+			if(_stricmp(currentLexerState.currentLexeme, "While") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_WHILE;
+			if(_stricmp(currentLexerState.currentLexeme, "Function") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_FUNCTION;
+			if(_stricmp(currentLexerState.currentLexeme, "Return") == 0) tokenType = ES_TOKEN_TYPE_RESERVED_RETURN;
 
 			break;
 

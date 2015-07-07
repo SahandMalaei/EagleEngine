@@ -5,7 +5,7 @@
 
 namespace ProjectEagle
 {
-	class Thread
+	/*class Thread
 	{
 	private:
 		HANDLE threadHandle;
@@ -30,7 +30,7 @@ namespace ProjectEagle
 
 		void mutexOn() const;
 		void mutexOff() const;
-	};
+	};*/
 };
 
 #endif

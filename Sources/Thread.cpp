@@ -2,7 +2,7 @@
 
 namespace ProjectEagle
 {
-	static DWORD WINAPI ThreadProc(Thread *thread )
+	/*static DWORD WINAPI ThreadProc(Thread *thread )
 	{
 		return thread->threadFunction();
 	}
@@ -33,7 +33,7 @@ namespace ProjectEagle
 	ThreadMonitor::ThreadMonitor()
 	{
 		mutexHandle = CreateMutex(0, false, 0);
-		if(!mutexHandle) Eagle->error("Mutex creation failed.");
+		if(!mutexHandle) eagle->error("Mutex creation failed.");
 	}
 
 	ThreadMonitor::~ThreadMonitor()
@@ -53,5 +53,5 @@ namespace ProjectEagle
 	void ThreadMonitor::MutexOff() const
 	{
 		ReleaseMutex(mutexHandle);
-	}
+	}*/
 };

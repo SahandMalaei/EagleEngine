@@ -140,7 +140,7 @@ namespace EagleScriptCompiler
 		{
 			IncludeData *includeData = (IncludeData *)currentNode->data;
 
-			if(stricmp(includeData->fileAddress, getCurrentLexeme()) == 0)
+			if(_stricmp(includeData->fileAddress, getCurrentLexeme()) == 0)
 			{
 				eagle.outputLogEvent((char *)("Warning : Duplicate file inclusion : \"" + (string)getCurrentLexeme() + "\"; include skipped").c_str());
 

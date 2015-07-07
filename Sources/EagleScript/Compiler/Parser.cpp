@@ -294,13 +294,13 @@ namespace EagleScriptCompiler
 
 						if(getCurrentToken() == ES_TOKEN_TYPE_IDENTIFIER)
 						{
-							if(stricmp(getCurrentLexeme(), "SetStackSize") == 0)
+							if(_stricmp(getCurrentLexeme(), "SetStackSize") == 0)
 							{
 							}
-							else if(stricmp(getCurrentLexeme(), "include") == 0)
+							else if(_stricmp(getCurrentLexeme(), "include") == 0)
 							{
 							}
-							else if(stricmp(getCurrentLexeme(), "define") == 0)
+							else if(_stricmp(getCurrentLexeme(), "define") == 0)
 							{
 								if(!readToken(ES_TOKEN_TYPE_IDENTIFIER))
 								{
@@ -826,7 +826,7 @@ namespace EagleScriptCompiler
 
 		std::string identifier = getCurrentLexeme();
 
-		FunctionNode *redefinedFunction;
+		FunctionNode *redefinedFunction = 0;
 		bool redefinition = 0;
 
 		if(functionIndex == -1)
@@ -3287,7 +3287,7 @@ namespace EagleScriptCompiler
 
 		if(getCurrentToken() == ES_TOKEN_TYPE_IDENTIFIER)
 		{
-			if(stricmp(getCurrentLexeme(), "SetStackSize") == 0)
+			if(_stricmp(getCurrentLexeme(), "SetStackSize") == 0)
 			{
 				if(!readToken(ES_TOKEN_TYPE_INT))
 				{
@@ -3296,7 +3296,7 @@ namespace EagleScriptCompiler
 
 				scriptHeader.stackSize = atoi(getCurrentLexeme());
 			}
-			else if(stricmp(getCurrentLexeme(), "include") == 0)
+			else if(_stricmp(getCurrentLexeme(), "include") == 0)
 			{
 				if(!readToken(ES_TOKEN_TYPE_STRING))
 				{
@@ -3319,7 +3319,7 @@ namespace EagleScriptCompiler
 					return 0;
 				}
 			}
-			else if(stricmp(getCurrentLexeme(), "define") == 0)
+			else if(_stricmp(getCurrentLexeme(), "define") == 0)
 			{
 				if(!readToken(ES_TOKEN_TYPE_IDENTIFIER))
 				{

@@ -60,11 +60,9 @@ namespace ProjectEagle
 	AudioSystem::AudioSystem()
 	{
 		system = 0;
-
 		sampleCount = 0;
 
 		lockListenerOnCamera = 1;
-
 		listenerPosition.set(0, 0, 0);
 	}
 

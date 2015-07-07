@@ -34,23 +34,23 @@ namespace EagleScriptCompiler
 			{
 				currentFunction = (FunctionNode *)currentNode->data;
 
-				if(stricmp(currentFunction->name, ES_PRELOAD_FUNCTION_NAME) == 0)
+				if(_stricmp(currentFunction->name, ES_PRELOAD_FUNCTION_NAME) == 0)
 				{
 					preloadFunction = currentFunction;
 				}
-				else if(stricmp(currentFunction->name, ES_INITIALIZE_FUNCTION_NAME) == 0)
+				else if(_stricmp(currentFunction->name, ES_INITIALIZE_FUNCTION_NAME) == 0)
 				{
 					initializeFunction = currentFunction;
 				}
-				else if(stricmp(currentFunction->name, ES_UPDATE_FUNCTION_NAME) == 0)
+				else if(_stricmp(currentFunction->name, ES_UPDATE_FUNCTION_NAME) == 0)
 				{
 					updateFunction = currentFunction;
 				}
-				else if(stricmp(currentFunction->name, ES_RENDER_FUNCTION_NAME) == 0)
+				else if(_stricmp(currentFunction->name, ES_RENDER_FUNCTION_NAME) == 0)
 				{
 					renderFunction = currentFunction;
 				}
-				else if(stricmp(currentFunction->name, ES_END_FUNCTION_NAME) == 0)
+				else if(_stricmp(currentFunction->name, ES_END_FUNCTION_NAME) == 0)
 				{
 					endFunction = currentFunction;
 				}
@@ -106,23 +106,23 @@ namespace EagleScriptCompiler
 			{
 				currentFunction = (FunctionNode *)currentNode->data;
 
-				if(stricmp(currentFunction->name, ES_PRELOAD_FUNCTION_NAME) == 0)
+				if(_stricmp(currentFunction->name, ES_PRELOAD_FUNCTION_NAME) == 0)
 				{
 					//preloadFunction = currentFunction;
 				}
-				else if(stricmp(currentFunction->name, ES_INITIALIZE_FUNCTION_NAME) == 0)
+				else if(_stricmp(currentFunction->name, ES_INITIALIZE_FUNCTION_NAME) == 0)
 				{
 					//initializeFunction = currentFunction;
 				}
-				else if(stricmp(currentFunction->name, ES_UPDATE_FUNCTION_NAME) == 0)
+				else if(_stricmp(currentFunction->name, ES_UPDATE_FUNCTION_NAME) == 0)
 				{
 					//updateFunction = currentFunction;
 				}
-				else if(stricmp(currentFunction->name, ES_RENDER_FUNCTION_NAME) == 0)
+				else if(_stricmp(currentFunction->name, ES_RENDER_FUNCTION_NAME) == 0)
 				{
 					//renderFunction = currentFunction;
 				}
-				else if(stricmp(currentFunction->name, ES_END_FUNCTION_NAME) == 0)
+				else if(_stricmp(currentFunction->name, ES_END_FUNCTION_NAME) == 0)
 				{
 					//endFunction = currentFunction;
 				}
