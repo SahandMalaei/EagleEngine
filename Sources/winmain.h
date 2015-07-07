@@ -1,0 +1,10 @@
+#ifndef _WINMAIN_H
+#define _WINMAIN_H 1
+
+#define Win32LeanAndMean
+#define Win32ExtraLean
+
+#define WINDOW_FULLSCREEN_STYLE WS_POPUP | WS_VISIBLE
+#define WINDOW_WINDOWED_STYLE WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+
+#endif
