@@ -21,7 +21,7 @@ namespace ProjectEagle
 	class Sprite : public GameObject
 	{
 	protected:
-		Vector3 m_rotation;
+		float m_rotation;
 
 		Vector3 m_velocity;
 
@@ -64,12 +64,10 @@ namespace ProjectEagle
 
 		// Rotation
 
-		Vector3 getRotation();
-		void setRotation(Vector3 value);
-		void setRotation(float x, float y, float z);
+		float getRotation();
+		void setRotation(float value);
 
-		void rotate(Vector3 value);
-		void rotate(float x,float y,float z);
+		void rotate(float value);
 
 		// Velocity and Acceleration
 
@@ -153,10 +151,8 @@ namespace ProjectEagle
 		void move();
 		void animate();
 		virtual void update();
-		virtual void draw();
-		virtual void drawTransformed();
-		virtual void drawWithout3DTransformation();
-		void drawBillboard();
+		virtual void render();
+		virtual void renderTransformed();
 	};
 };
 

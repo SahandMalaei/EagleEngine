@@ -485,9 +485,12 @@ namespace ProjectEagle
 		float vy = sin(m_direction - m_spread / 2 + variation); // * speedVar;
 		//float vz = sin(d) * speedVar;
 
-		int randomPointDistance = 0;
+		float randomPointDistance = 0;
 
-		if(m_moveLength) randomPointDistance = rand() % m_moveLength;
+		if(m_moveLength)
+		{
+			randomPointDistance = math.randomFloat(m_moveLength);
+		}
 
 		Vector3 moveVector = m_moveNormal * randomPointDistance;
 
@@ -704,9 +707,9 @@ namespace ProjectEagle
 		return m_spread;
 	}
 
-	void ParticleSystem::setSpread(float s)
+	void ParticleSystem::setSpread(float value)
 	{
-		m_spread = s;
+		m_spread = value;
 	}
 
 	float ParticleSystem::getMaximumDistance()
@@ -714,9 +717,9 @@ namespace ProjectEagle
 		return m_maximumDistance;
 	}
 
-	void ParticleSystem::setMaximumDistance(float l)
+	void ParticleSystem::setMaximumDistance(float value)
 	{
-		m_maximumDistance = l;
+		m_maximumDistance = value;
 	}
 
 	float ParticleSystem::getVelocity()
@@ -724,9 +727,9 @@ namespace ProjectEagle
 		return m_velocity;
 	}
 
-	void ParticleSystem::setVelocity(float v)
+	void ParticleSystem::setVelocity(float value)
 	{
-		m_velocity = v;
+		m_velocity = value;
 	}
 
 	float ParticleSystem::getScale()
@@ -734,9 +737,9 @@ namespace ProjectEagle
 		return m_scale;
 	}
 
-	void ParticleSystem::setScale(float s)
+	void ParticleSystem::setScale(float value)
 	{
-		m_scale = s;
+		m_scale = value;
 	}
 
 	int ParticleSystem::getAddDelay()
@@ -744,9 +747,9 @@ namespace ProjectEagle
 		return m_addDelay;
 	}
 
-	void ParticleSystem::setAddDelay(float d)
+	void ParticleSystem::setAddDelay(float value)
 	{
-		m_addDelay = d;
+		m_addDelay = value;
 	}
 
 	int ParticleSystem::getParticleCount()

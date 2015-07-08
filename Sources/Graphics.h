@@ -40,6 +40,12 @@ namespace ProjectEagle
 
 	struct DrawCallData;
 
+	enum BlendMode
+	{
+		BlendMode_Normal = 0,
+		BlendMode_Additive = 1
+	};
+
 	class GraphicsSystem
 	{
 #ifdef PLATFORM_WP8
@@ -159,6 +165,9 @@ namespace ProjectEagle
 		Texture *m_currentTexture;
 		Vector2 m_textureTopLeft, m_textureBottomRight;
 
+		BlendMode m_blendMode;
+		ID3D11BlendState *m_blendState[2];
+
 		void resetWindow();
 
 	public:
@@ -244,6 +253,9 @@ namespace ProjectEagle
 		void setTextureSourceRectangle(Vector2 topLeft, Vector2 bottomRight);
 		Vector2 getTextureTopLeft();
 		Vector2 getTextureBottomRight();
+
+		BlendMode getBlendMode();
+		void setBlendMode(BlendMode mode);
 
 		void clearScene(ColorValue color);
 

@@ -56,7 +56,7 @@ namespace ProjectEagle
 		int m_inactiveParticleListTopIndex;
 
 		Vector3 m_lastPosition, m_moveAmount, m_moveNormal;
-		int m_moveLength;
+		float m_moveLength;
 
 		float m_stretchFactor;
 
@@ -114,19 +114,19 @@ namespace ProjectEagle
 		void setMaximumBlue(float value);
 
 		float getSpread();
-		void setSpread(float s);
+		void setSpread(float value);
 		
 		float getMaximumDistance();
-		void setMaximumDistance(float l);
+		void setMaximumDistance(float value);
 
 		float getVelocity();
-		void setVelocity(float v);
+		void setVelocity(float value);
 		
 		float getScale();
-		void setScale(float s);
+		void setScale(float value);
 
 		int getAddDelay();
-		void setAddDelay(float d);
+		void setAddDelay(float seconds);
 
 		int getParticleCount();
 		void setParticleCount(int value);

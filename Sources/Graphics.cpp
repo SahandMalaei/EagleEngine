@@ -30,6 +30,8 @@ namespace ProjectEagle
 
 		bool worldMatrixChange;
 		DirectX::XMMATRIX worldMatrix;
+
+		BlendMode blendMode;
 	};
 
 	GraphicsSystem::GraphicsSystem()
@@ -547,43 +549,58 @@ namespace ProjectEagle
 					return;
 				}
 
-				ID3D11BlendState *blendState;
+				m_blendMode = BlendMode_Additive;
 
-				D3D11_BLEND_DESC transparentDesc;
-				transparentDesc.AlphaToCoverageEnable = 0;
-				transparentDesc.IndependentBlendEnable = 0;
+				// Normal blending
 
-				transparentDesc.RenderTarget[0].BlendEnable = 1;
-				transparentDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-				transparentDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-				transparentDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-				transparentDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-				transparentDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-				transparentDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-				transparentDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+				D3D11_BLEND_DESC blendDesc[2];
+				blendDesc[0].AlphaToCoverageEnable = 0;
+				blendDesc[0].IndependentBlendEnable = 0;
 
-				// Additive
-				/*transparentDesc.RenderTarget[0].BlendEnable = 1;
-				transparentDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-				transparentDesc.RenderTarget[0].DestBlend = D3D11_BLEND_DEST_ALPHA;
-				transparentDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-				transparentDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-				transparentDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-				transparentDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-				transparentDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;*/
+				blendDesc[0].RenderTarget[0].BlendEnable = 1;
+				blendDesc[0].RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+				blendDesc[0].RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+				blendDesc[0].RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+				blendDesc[0].RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+				blendDesc[0].RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+				blendDesc[0].RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+				blendDesc[0].RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-				result = m_d3dDevice11->CreateBlendState(&transparentDesc, &blendState);
+				result = m_d3dDevice11->CreateBlendState(&blendDesc[0], &m_blendState[0]);
 
 				if(FAILED(result))
 				{
-					eagle.error("Failed to create the blending state. Error code : " + INT_TO_STRING(result));
+					eagle.error("Failed to create the normal blending state. Error code : " + INT_TO_STRING(result));
 
 					return;
 				}
 
 				float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 
-				m_d3dDevice11Context->OMSetBlendState(blendState, blendFactor, 0xffffffff);
+				m_d3dDevice11Context->OMSetBlendState(m_blendState[0], blendFactor, 0xffffffff);
+
+				// Additive blending
+
+				blendDesc[1].AlphaToCoverageEnable = 0;
+				blendDesc[1].IndependentBlendEnable = 0;
+
+				blendDesc[1].RenderTarget[0].BlendEnable = 1;
+				blendDesc[1].RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+				blendDesc[1].RenderTarget[0].DestBlend = D3D11_BLEND_ONE/* D3D11_BLEND_DEST_ALPHA*/;
+				blendDesc[1].RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+				blendDesc[1].RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+				blendDesc[1].RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+				blendDesc[1].RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+				blendDesc[1].RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+				result = m_d3dDevice11->CreateBlendState(&blendDesc[1], &m_blendState[1]);
+
+				if(FAILED(result))
+				{
+					eagle.error("Failed to create the additive blending state. Error code : " + INT_TO_STRING(result));
+
+					return;
+				}
 
 				D3D11_RASTERIZER_DESC rasterizerDesc2D;
 				std::memset(&rasterizerDesc2D, 0, sizeof(D3D11_RASTERIZER_DESC));
@@ -1464,6 +1481,10 @@ namespace ProjectEagle
 		float halfScreenWidth = m_screenWidth / 2;
 		float aspectRatio = (float)m_screenWidth / m_screenHeight;
 
+		BlendMode previousBlendMode = m_blendMode;
+		float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
+		m_d3dDevice11Context->OMSetBlendState(m_blendState[int(m_blendMode)], blendFactor, 0xffffffff);
+
 		for(int i = 0; i < m_drawCallCount; ++i)
 		{
 			if(m_drawCallBuffer[i].worldMatrixChange)
@@ -1546,6 +1567,14 @@ namespace ProjectEagle
 				m_d3dDevice11Context->PSSetShader(m_simplePixelShader.pixelShader, 0, 0);
 			}
 
+			if(m_drawCallBuffer[i].blendMode != m_blendMode)
+			{
+				m_blendMode = m_drawCallBuffer[i].blendMode;
+
+				float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
+				m_d3dDevice11Context->OMSetBlendState(m_blendState[int(m_blendMode)], blendFactor, 0xffffffff);
+			}
+
 			if(m_drawCallBuffer[i].isTransformed)
 			{
 				setIdentity();
@@ -1594,6 +1623,8 @@ namespace ProjectEagle
 
 		setTexture(0);
 
+		m_blendMode = previousBlendMode;
+
 		m_renderingBufferedDrawCalls = 0;
 	}
 
@@ -1627,6 +1658,7 @@ namespace ProjectEagle
 				drawCallData.isTransformed = 0;
 				drawCallData.primitiveGroupSize = 1;
 				drawCallData.worldMatrixChange = 0;
+				drawCallData.blendMode = m_blendMode;
 
 				m_drawCallBuffer[m_drawCallCount] = drawCallData;
 
@@ -1671,6 +1703,7 @@ namespace ProjectEagle
 				drawCallData.isTransformed = 1;
 				drawCallData.primitiveGroupSize = 1;
 				drawCallData.worldMatrixChange = 0;
+				drawCallData.blendMode = m_blendMode;
 
 				m_drawCallBuffer[m_drawCallCount] = drawCallData;
 
@@ -1741,6 +1774,7 @@ namespace ProjectEagle
 				drawCallData.isTransformed = 0;
 				drawCallData.primitiveGroupSize = objectCount;
 				drawCallData.worldMatrixChange = 0;
+				drawCallData.blendMode = m_blendMode;
 
 				m_drawCallBuffer[m_drawCallCount] = drawCallData;
 
@@ -1810,6 +1844,7 @@ namespace ProjectEagle
 				drawCallData.isTransformed = 1;
 				drawCallData.primitiveGroupSize = objectCount;
 				drawCallData.worldMatrixChange = 0;
+				drawCallData.blendMode = m_blendMode;
 
 				m_drawCallBuffer[m_drawCallCount] = drawCallData;
 
@@ -1911,6 +1946,21 @@ namespace ProjectEagle
 	Vector2 GraphicsSystem::getTextureBottomRight()
 	{
 		return m_textureBottomRight;
+	}
+
+	BlendMode GraphicsSystem::getBlendMode()
+	{
+		return m_blendMode;
+	}
+
+	void GraphicsSystem::setBlendMode(BlendMode mode)
+	{
+		if(int(mode) > 1 || int(mode) < 0)
+		{
+			return;
+		}
+
+		m_blendMode = mode;
 	}
 
 	void GraphicsSystem::drawLine(float x1, float y1, float x2, float y2, int thickness, ColorValue color, float depth)

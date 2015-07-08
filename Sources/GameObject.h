@@ -42,8 +42,8 @@ namespace ProjectEagle
 		~GameObject();
 
 		virtual void update();
-		virtual void draw();
-		virtual void drawTransformed();
+		virtual void render();
+		virtual void renderTransformed();
 		void transformationBasedDraw();
 		void parentalUpdate();
 

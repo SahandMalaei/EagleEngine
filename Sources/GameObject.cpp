@@ -4,12 +4,12 @@ namespace ProjectEagle
 {
 	static void drawGameObjectTransformed(GameObject *object)
 	{
-		object->drawTransformed();
+		object->renderTransformed();
 	}
 
 	static void drawGameObject(GameObject *object)
 	{
-		object->draw();
+		object->render();
 	}
 
 	// GameObject
@@ -40,11 +40,11 @@ namespace ProjectEagle
 	{
 	}
 
-	void GameObject::draw()
+	void GameObject::render()
 	{
 	}
 
-	void GameObject::drawTransformed()
+	void GameObject::renderTransformed()
 	{
 	}
 
@@ -292,7 +292,7 @@ namespace ProjectEagle
 			if(m_gameObjectList[i] == 0 || !m_gameObjectList[i]->m_alive) continue;
 
 			//m_gameObjectList[i]->TransformationBaseddraw();
-			m_gameObjectList[i]->draw();
+			m_gameObjectList[i]->render();
 			//Sprite *aa = (Sprite *)m_gameObjectList[i];
 			//aa->draw();
 			//eagle.message("!");

@@ -41,7 +41,7 @@ namespace ProjectEagle
 		m_animationStartX = 0;
 		m_animationStartY = 0;
 
-		m_rotation.set(0, 0, 0);
+		m_rotation = 0.0;
 
 		setScale(1.0f);
 
@@ -103,7 +103,7 @@ namespace ProjectEagle
 		parentalUpdate();
 	}
 
-	void Sprite::draw()
+	void Sprite::render()
 	{
 		if(!m_visible)
 		{
@@ -117,7 +117,7 @@ namespace ProjectEagle
 
 		Vertex v[4];
 
-		Vector2 pos0 = math.rotatePoint(0, 0, m_center.x, m_center.y, m_rotation.z);
+		Vector2 pos0 = math.rotatePoint(0, 0, m_center.x, m_center.y, m_rotation);
 		v[0].x = m_position.x + pos0.x * m_scale.x;
 		v[0].y = m_position.y + pos0.y * m_scale.y;
 		v[0].z = m_position.z;
@@ -125,7 +125,7 @@ namespace ProjectEagle
 		v[0].tu = (fx) / m_textureWidth;
 		v[0].tv = (fy) / m_textureHeight;
 
-		Vector2 pos1 = math.rotatePoint(m_width, 0, m_center.x, m_center.y, m_rotation.z);
+		Vector2 pos1 = math.rotatePoint(m_width, 0, m_center.x, m_center.y, m_rotation);
 		v[1].x = m_position.x + pos1.x * m_scale.x;
 		v[1].y = m_position.y + pos1.y * m_scale.y;
 		v[1].z = m_position.z;
@@ -133,7 +133,7 @@ namespace ProjectEagle
 		v[1].tu = (fx + m_width/* - 1*/) / m_textureWidth;
 		v[1].tv = (fy) / m_textureHeight;
 
-		Vector2 pos2 = math.rotatePoint(0, m_height, m_center.x, m_center.y, m_rotation.z);
+		Vector2 pos2 = math.rotatePoint(0, m_height, m_center.x, m_center.y, m_rotation);
 		v[2].x = m_position.x + pos2.x * m_scale.x;
 		v[2].y = m_position.y + pos2.y * m_scale.y;
 		v[2].z = m_position.z;
@@ -141,7 +141,7 @@ namespace ProjectEagle
 		v[2].tu = (fx) / m_textureWidth;
 		v[2].tv =  (fy + m_height/* - 1*/) / m_textureHeight;
 
-		Vector2 pos3 = math.rotatePoint(m_width, m_height, m_center.x, m_center.y, m_rotation.z);
+		Vector2 pos3 = math.rotatePoint(m_width, m_height, m_center.x, m_center.y, m_rotation);
 		v[3].x = m_position.x + pos3.x * m_scale.x;
 		v[3].y = m_position.y + pos3.y * m_scale.y;
 		v[3].z = m_position.z;
@@ -158,7 +158,7 @@ namespace ProjectEagle
 		return;
 	}
 
-	void Sprite::drawTransformed()
+	void Sprite::renderTransformed()
 	{
 		if(!m_visible)
 		{
@@ -168,7 +168,7 @@ namespace ProjectEagle
 		float fx = (m_currentFrame % m_animationColumnCount) * m_width;
 		float fy = ((m_currentFrame / m_animationColumnCount) + m_animationRow) * m_height;
 
-		if(math.approximateEquals(m_rotation.z, 0))
+		if(math.approximateEquals(m_rotation, 0))
 		{
 			Vertex v[4];
 
@@ -207,7 +207,7 @@ namespace ProjectEagle
 		{
 			Vertex v[4];
 
-			Vector2 pos0 = math.rotatePoint(0, 0, m_center.x, m_center.y, m_rotation.z);
+			Vector2 pos0 = math.rotatePoint(0, 0, m_center.x, m_center.y, m_rotation);
 			v[0].x = m_position.x + pos0.x * m_scale.x;
 			v[0].y = m_position.y + pos0.y * m_scale.y;
 			v[0].z = m_position.z;
@@ -215,7 +215,7 @@ namespace ProjectEagle
 			v[0].tu = (fx) / m_textureWidth;
 			v[0].tv = (fy) / m_textureHeight;
 
-			Vector2 pos1 = math.rotatePoint(m_width, 0, m_center.x, m_center.y, m_rotation.z);
+			Vector2 pos1 = math.rotatePoint(m_width, 0, m_center.x, m_center.y, m_rotation);
 			v[1].x = m_position.x + pos1.x * m_scale.x;
 			v[1].y = m_position.y + pos1.y * m_scale.y;
 			v[1].z = m_position.z;
@@ -223,7 +223,7 @@ namespace ProjectEagle
 			v[1].tu = (fx + m_width/* - 1*/) / m_textureWidth;
 			v[1].tv = (fy) / m_textureHeight;
 
-			Vector2 pos2 = math.rotatePoint(0, m_height, m_center.x, m_center.y, m_rotation.z);
+			Vector2 pos2 = math.rotatePoint(0, m_height, m_center.x, m_center.y, m_rotation);
 			v[2].x = m_position.x + pos2.x * m_scale.x;
 			v[2].y = m_position.y + pos2.y * m_scale.y;
 			v[2].z = m_position.z;
@@ -231,7 +231,7 @@ namespace ProjectEagle
 			v[2].tu = (fx) / m_textureWidth;
 			v[2].tv =  (fy + m_height/* - 1*/) / m_textureHeight;
 
-			Vector2 pos3 = math.rotatePoint(m_width, m_height, m_center.x, m_center.y, m_rotation.z);
+			Vector2 pos3 = math.rotatePoint(m_width, m_height, m_center.x, m_center.y, m_rotation);
 			v[3].x = m_position.x + pos3.x * m_scale.x;
 			v[3].y = m_position.y + pos3.y * m_scale.y;
 			v[3].z = m_position.z;
@@ -246,11 +246,11 @@ namespace ProjectEagle
 		graphics.setTexture(0);
 	}
 
-	void Sprite::drawWithout3DTransformation()
+	/*void Sprite::drawWithout3DTransformation()
 	{
-	}
+	}*/
 
-	void Sprite::drawBillboard()
+	/*void Sprite::drawBillboard()
 	{
 		if(!m_visible)
 		{
@@ -297,7 +297,7 @@ namespace ProjectEagle
 		m_position.z *= -1;
 
 		return;
-	}
+	}*/
 
 	void Sprite::move()
 	{
@@ -346,32 +346,22 @@ namespace ProjectEagle
 	
 	Vector2 Sprite::getRotatedPosition()
 	{
-		return rotatePoint(m_position.x, m_position.y, m_center.x, m_center.y, m_rotation.z);
+		return rotatePoint(m_position.x, m_position.y, m_center.x, m_center.y, m_rotation);
 	}
 
-	Vector3 Sprite::getRotation()
+	float Sprite::getRotation()
 	{
 		return m_rotation;
 	}
 
-	void Sprite::setRotation(Vector3 value)
+	void Sprite::setRotation(float value)
 	{
 		m_rotation = value;
 	}
 
-	void Sprite::setRotation(float x, float y, float z)
-	{
-		m_rotation.set(x, y, z);
-	}
-
-	void Sprite::rotate(Vector3 value)
+	void Sprite::rotate(float value)
 	{
 		m_rotation += value;
-	}
-
-	void Sprite::rotate(float x,float y,float z)
-	{
-		m_rotation += Vector3(x, y, z);
 	}
 
 	Vector3 Sprite::getVelocity()

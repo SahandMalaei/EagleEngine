@@ -106,16 +106,16 @@ namespace ProjectEagle
 
 	void Button::draw()
 	{
-		up->draw();
-		over->draw();
-		down->draw();
+		up->render();
+		over->render();
+		down->render();
 	}
 
 	void Button::drawTransformed()
 	{
-		up->drawTransformed();
-		over->drawTransformed();
-		down->drawTransformed();
+		up->renderTransformed();
+		over->renderTransformed();
+		down->renderTransformed();
 	}
 
 #ifdef PLATFORM_WP8

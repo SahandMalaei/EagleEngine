@@ -30,8 +30,7 @@ namespace ProjectEagle
 		void setPosition(int x, int y, int z){position.set(x, y, z);}
 		Vector3 getPosition(){return position;}
 
-		void setRotation(Vector3 value){up->setRotation(value); over->setRotation(value); down->setRotation(value);}
-		void setRotation(float x, float y, float z){up->setRotation(x, y, z); over->setRotation(x, y, z); down->setRotation(x, y, z);}
+		void setRotation(float value){up->setRotation(value); over->setRotation(value); down->setRotation(value);}
 
 		//void setAlpha(int a){up->setAlpha(a); over->setAlpha(a); down->setAlpha(a);}
 		void setColor(DWORD c){up->setColor(c); over->setColor(c); down->setColor(c);}

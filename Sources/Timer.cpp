@@ -49,7 +49,7 @@ namespace ProjectEagle
 
 	bool Timer::stopWatch(float seconds)
 	{
-		if(getPassedTimeSeconds() >= seconds)
+		if(getPassedTimeSeconds() > seconds)
 		{
 			return 1;
 		}

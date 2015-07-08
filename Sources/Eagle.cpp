@@ -215,15 +215,6 @@ namespace ProjectEagle
 
 	void EagleEngine::updateEngine()
 	{
-		/*if(coreTimer.stopWatch(1))
-		{
-			coreFrameRate = coreFrameCount;
-			coreFrameCount = 0;
-
-			coreTimer.reset();
-		}*/
-
-		//if(calTimer.stopWatch(1000.0 / calculataionFrequency - delayTime))
 		if(frameTimer.stopWatch(1.0 / calculataionFrequency))
 		{
 			frameTime = frameTimer.getPassedTimeSeconds();
@@ -261,8 +252,6 @@ namespace ProjectEagle
 				audio.update();
 			}
 
-			coreFrameCount++;
-
 			if(graphics.renderStart())
 			{
 				graphics.setWorldIdentity();
@@ -279,7 +268,12 @@ namespace ProjectEagle
 					console.setShowing(1);
 				}
 
+				BlendMode previousBlendMode = graphics.getBlendMode();
+				graphics.setBlendMode(BlendMode_Normal);
+
 				console.draw();
+
+				graphics.setBlendMode(previousBlendMode);
 
 				graphics.renderStop();
 
@@ -287,7 +281,7 @@ namespace ProjectEagle
 			}
 
 			float timeElapsed = frameTimer.getPassedTimeSeconds();
-			sleep(max<float>(0.0, min<float>(0.001, 1.0 / calculataionFrequency - timeElapsed - 0.002)));
+			//sleep(max<float>(0.0, min<float>(0.001, 1.0 / calculataionFrequency - timeElapsed - 0.002)));
 		}
 		
 		if(coreTimer.stopWatch(0.1))
@@ -296,13 +290,6 @@ namespace ProjectEagle
 
 			coreTimer.reset();
 		}
-
-//		else if(!calTimer.stopWatch(max<float>(1000.0 / calculataionFrequency - delayTime - 10, 0)))
-//		{
-//#ifndef PLATFORM_WP8
-//			sleep(1);
-//#endif
-//		}
 	}
 
 	void EagleEngine::close()
