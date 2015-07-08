@@ -123,7 +123,7 @@ namespace ProjectEagle
 			}
 		}
 
-		result = FMOD_System_Init(system, 32, FMOD_INIT_NORMAL, 0);
+		result = FMOD_System_Init(system, 256, FMOD_INIT_NORMAL, 0);
 
 		if(result != FMOD_OK)
 		{
@@ -219,26 +219,6 @@ namespace ProjectEagle
 		FMOD_System_Update(system);
 	}
 
-	/*SoundSample* AudioSystem::loadSound(std::string fileName)
-	{
-	if(fileName.length() == 0) return 0;
-
-	SoundSample *sample = new SoundSample();
-
-	FMOD_RESULT r;
-
-	r = FMOD_System_CreateSound(system, fileName.c_str(), FMOD_2D, 0, &sample->sample);
-	if(r != FMOD_OK) 
-	{
-	sample = 0;
-	ostringstream a;
-	a << "Error loading sample from file " << fileName;
-	eagle.error(a.str());
-	}
-
-	return sample;
-	}*/
-
 	int AudioSystem::loadSound2D(std::string fileName, std::string name, std::string category)
 	{
 		if(fileName.length() == 0 || name.length() == 0) return 0;
@@ -249,7 +229,7 @@ namespace ProjectEagle
 
 		FMOD_RESULT r;
 
-		r = FMOD_System_CreateSound(system, fileName.c_str(), FMOD_2D, 0, &sample->sample);
+		r = FMOD_System_CreateSound(system, fileName.c_str(), FMOD_2D | FMOD_LOOP_NORMAL, 0, &sample->sample);
 
 		if(r != FMOD_OK)
 		{
@@ -278,7 +258,7 @@ namespace ProjectEagle
 
 		FMOD_RESULT r;
 
-		r = FMOD_System_CreateSound(system, fileName.c_str(), FMOD_3D, 0, &sample->sample);
+		r = FMOD_System_CreateSound(system, fileName.c_str(), FMOD_3D | FMOD_LOOP_NORMAL, 0, &sample->sample);
 
 		if(r != FMOD_OK)
 		{
@@ -403,7 +383,7 @@ namespace ProjectEagle
 
 			r = FMOD_System_PlaySound(system, FMOD_CHANNEL_FREE, sample->sample, 1, &sample->channel);
 			if(r != FMOD_OK) return 0;
-			FMOD_Channel_SetLoopCount(sample->channel, -1);
+			FMOD_Channel_SetLoopCount(sample->channel, 0);
 			FMOD_Channel_SetPaused(sample->channel, 0);
 
 			if(FMOD_Channel_SetPan(sample->channel, sample->getPan()) != FMOD_OK)
@@ -413,7 +393,7 @@ namespace ProjectEagle
 			if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency()) != FMOD_OK)
 				eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
 		}
-		//free((void *)sample);
+
 		return 1;
 	}
 
@@ -427,7 +407,7 @@ namespace ProjectEagle
 
 		r = FMOD_System_PlaySound(system, FMOD_CHANNEL_FREE, sample->sample, 1, &sample->channel);
 		if(r != FMOD_OK) return 0;
-		FMOD_Channel_SetLoopCount(sample->channel, -1);
+		FMOD_Channel_SetLoopCount(sample->channel, 0);
 		FMOD_Channel_SetPaused(sample->channel, 0);
 		if(FMOD_Channel_SetPan(sample->channel, sample->getPan()) != FMOD_OK)
 			eagle.error("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
@@ -1317,5 +1297,30 @@ namespace ProjectEagle
 		FMOD_Channel_GetPosition(sample->channel, &channelPosition, FMOD_TIMEUNIT_MS);
 
 		return channelPosition;
+	}
+
+	int AudioSystem::getSoundLoopCount(std::string name)
+	{
+		SoundSample *sample = findSound(name);
+		if(!sample)
+		{
+			return 0;
+		}
+
+		int loopCount = 0;
+		FMOD_Channel_GetLoopCount(sample->channel, &loopCount);
+
+		return loopCount;
+	}
+
+	void AudioSystem::setSoundLoopCount(std::string name, int count)
+	{
+		SoundSample *sample = findSound(name);
+		if(!sample)
+		{
+			return;
+		}
+
+		FMOD_Channel_SetLoopCount(sample->channel, count);
 	}
 };

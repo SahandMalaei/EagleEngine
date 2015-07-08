@@ -247,6 +247,9 @@ namespace ProjectEagle
 		void setSoundPosition(std::string name, Vector3 value);
 		Vector3 getSoundPosition(std::string name);
 
+		int getSoundLoopCount(std::string name);
+		void setSoundLoopCount(std::string name, int count);
+
 		int startRecording(std::string soundName, std::string soundCategory, int soundLengthMilliseconds, bool loop);
 		void stopRecording();
 
