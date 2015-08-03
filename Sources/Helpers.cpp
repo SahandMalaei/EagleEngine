@@ -1,4 +1,4 @@
-#include "Eagle.h"
+#include "Helpers.h"
 
 namespace ProjectEagle
 {
@@ -562,6 +562,42 @@ namespace ProjectEagle
 		this->rotation = rotation;
 	}
 
+	Vector2 rotatePoint(float x, float y, float centerX, float centerY, float angle)
+	{
+		//p'x = cos(theta) * (px-ox) - sin(theta) * (py-oy) + ox
+        //p'y = sin(theta) * (px-ox) + cos(theta) * (py-oy) + oy
+
+		float s = sin(angle);
+		float c = cos(angle);
+
+		x -= centerX;
+		y -= centerY;
+
+		Vector2 rotatedPoint;
+		rotatedPoint.x = x * c - y * s + centerX;
+		rotatedPoint.y = x * s + y * c + centerY;
+
+		return rotatedPoint;
+	}
+
+	Vector2 rotatePoint(Vector2 pos, Vector2 center, float angle)
+	{
+		return rotatePoint(pos.x, pos.y, center.x, center.y, angle);
+	}
+
+	float distance(float x1, float y1, float x2, float y2)
+	{
+		float dx = x2 - x1;
+		float dy = y2 - y1;
+		
+		return sqrt(dx * dx + dy * dy);
+	}
+
+	float distance(Vector2 v1, Vector2 v2)
+	{
+		return distance(v1.x, v1.y, v2.x, v2.y);
+	}
+
 	bool RotatedRectangle::isRectangleIntersecting(const RotatedRectangle &rectangle)
 	{
 		Vector2 rotatedPositionList[8];
@@ -569,17 +605,17 @@ namespace ProjectEagle
 
 		rotationCenterList[0] = Vector2(left + centerX, top + centerY);
 
-		rotatedPositionList[0] = math.rotatePoint(Vector2(left, top), rotationCenterList[0], rotation);
-		rotatedPositionList[1] = math.rotatePoint(Vector2(left + width, top), rotationCenterList[0], rotation);
-		rotatedPositionList[2] = math.rotatePoint(Vector2(left + width, top + height), rotationCenterList[0], rotation);
-		rotatedPositionList[3] = math.rotatePoint(Vector2(left, top + height), rotationCenterList[0], rotation);
+		rotatedPositionList[0] = rotatePoint(Vector2(left, top), rotationCenterList[0], rotation);
+		rotatedPositionList[1] = rotatePoint(Vector2(left + width, top), rotationCenterList[0], rotation);
+		rotatedPositionList[2] = rotatePoint(Vector2(left + width, top + height), rotationCenterList[0], rotation);
+		rotatedPositionList[3] = rotatePoint(Vector2(left, top + height), rotationCenterList[0], rotation);
 
 		rotationCenterList[1] = Vector2(rectangle.left + rectangle.centerX, rectangle.top + rectangle.centerY);
 
-		rotatedPositionList[4] = math.rotatePoint(Vector2(rectangle.left, rectangle.top), rotationCenterList[1], rectangle.rotation);
-		rotatedPositionList[5] = math.rotatePoint(Vector2(rectangle.left + rectangle.width, rectangle.top), rotationCenterList[1], rectangle.rotation);
-		rotatedPositionList[6] = math.rotatePoint(Vector2(rectangle.left + rectangle.width, rectangle.top + rectangle.height), rotationCenterList[1], rectangle.rotation);
-		rotatedPositionList[7] = math.rotatePoint(Vector2(rectangle.left, rectangle.top + rectangle.height), rotationCenterList[1], rectangle.rotation);
+		rotatedPositionList[4] = rotatePoint(Vector2(rectangle.left, rectangle.top), rotationCenterList[1], rectangle.rotation);
+		rotatedPositionList[5] = rotatePoint(Vector2(rectangle.left + rectangle.width, rectangle.top), rotationCenterList[1], rectangle.rotation);
+		rotatedPositionList[6] = rotatePoint(Vector2(rectangle.left + rectangle.width, rectangle.top + rectangle.height), rotationCenterList[1], rectangle.rotation);
+		rotatedPositionList[7] = rotatePoint(Vector2(rectangle.left, rectangle.top + rectangle.height), rotationCenterList[1], rectangle.rotation);
 
 		centerList[0] = Vector2((left + left + width) / 2, (top + top + height) / 2);
 		centerList[1] = Vector2((rectangle.left + rectangle.left + rectangle.width) / 2, (rectangle.top + rectangle.top + rectangle.height) / 2);
@@ -587,7 +623,7 @@ namespace ProjectEagle
 		rotatedCenterList[0] = (rotatedPositionList[0] + rotatedPositionList[2]) / 2;
 		rotatedCenterList[1] = (rotatedPositionList[4] + rotatedPositionList[6]) / 2;
 
-		if(math.distance(Vector2(left, top), centerList[0]) + math.distance(Vector2(rectangle.left, rectangle.top), centerList[1]) < math.distance(rotatedCenterList[0], rotatedCenterList[1]))
+		if(distance(Vector2(left, top), centerList[0]) + distance(Vector2(rectangle.left, rectangle.top), centerList[1]) < distance(rotatedCenterList[0], rotatedCenterList[1]))
 		{
 			return 0;
 		}
@@ -638,16 +674,16 @@ namespace ProjectEagle
 
 		rotationCenterPosition = Vector2(left + centerX, top + centerY);
 
-		rotatedPositionList[0] = math.rotatePoint(Vector2(left, top), rotationCenterPosition, rotation);
-		rotatedPositionList[1] = math.rotatePoint(Vector2(left + width, top), rotationCenterPosition, rotation);
-		rotatedPositionList[2] = math.rotatePoint(Vector2(left + width, top + height), rotationCenterPosition, rotation);
-		rotatedPositionList[3] = math.rotatePoint(Vector2(left, top + height), rotationCenterPosition, rotation);
+		rotatedPositionList[0] = rotatePoint(Vector2(left, top), rotationCenterPosition, rotation);
+		rotatedPositionList[1] = rotatePoint(Vector2(left + width, top), rotationCenterPosition, rotation);
+		rotatedPositionList[2] = rotatePoint(Vector2(left + width, top + height), rotationCenterPosition, rotation);
+		rotatedPositionList[3] = rotatePoint(Vector2(left, top + height), rotationCenterPosition, rotation);
 
 
 		centerPosition = Vector2((left + left + width) / 2, (top + top + height) / 2);
 		rotatedCenterPosition = (rotatedPositionList[0] + rotatedPositionList[2]) / 2;
 
-		if(math.distance(Vector2(left, top), centerPosition) < math.distance(rotatedCenterPosition, v))
+		if(distance(Vector2(left, top), centerPosition) < distance(rotatedCenterPosition, v))
 		{
 			return 0;
 		}
@@ -869,32 +905,6 @@ namespace ProjectEagle
 		return 1;
 	}
 
-	bool floatEquality(float number0, float number1)
-	{
-		if(number0 + 0.000001 > number1 && number0 - 0.000001 < number1)
-		{
-			return 1;
-		}
-
-		return 0;
-	}
-
-	BOOL WINAPI AnsiToUnicode(LPSTR ansiString, LPWSTR unicodeBuffer, DWORD unicodeBufferSize)
-	{
-		int returnValue = 0;
-		returnValue = MultiByteToWideChar(CP_ACP, 0, ansiString, -1, unicodeBuffer, unicodeBufferSize);
-
-		return (returnValue != 0);
-	}
-
-	BOOL WINAPI UnicodeToAnsi(LPWSTR unicodeString, LPSTR  ansiBuffer, DWORD ansiBufferSize)
-	{
-		int returnValue = 0;
-		returnValue = WideCharToMultiByte(CP_ACP, 0, unicodeString, -1, ansiBuffer, ansiBufferSize, NULL, NULL);
-
-		return (returnValue != 0);
-	}
-
 	/*int asciiHexToInt(string hexString)
 	{
 		if(hexString.length() < 3) return 0;
@@ -949,7 +959,7 @@ namespace ProjectEagle
 				break;
 			}
 
-			value += math.power(16, power) * atoi(currentCharacter.c_str());
+			value += power(16, power) * atoi(currentCharacter.c_str());
 
 			power++;
 		}

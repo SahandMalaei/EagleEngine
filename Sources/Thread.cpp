@@ -1,4 +1,4 @@
-#include "Eagle.h"
+#include "Thread.h"
 
 namespace ProjectEagle
 {

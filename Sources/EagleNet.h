@@ -435,7 +435,8 @@
 #ifndef _EAGLENET_H
 #define _EAGLENET_H 1
 
-#include "Eagle.h"
+#include <WinSock2.h>
+#include <Windows.h>
 
 using namespace std;
 

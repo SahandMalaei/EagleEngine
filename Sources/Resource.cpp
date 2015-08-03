@@ -1,4 +1,4 @@
-#include "Eagle.h"
+#include "Resource.h"
 
 namespace ProjectEagle
 {
@@ -23,7 +23,7 @@ namespace ProjectEagle
 		return m_type;
 	}
 
-	string Resource::getAddress()
+	std::string Resource::getAddress()
 	{
 		return m_fileAddress;
 	}
@@ -67,12 +67,6 @@ namespace ProjectEagle
 				m_shaderResourceView->Release();
 				m_shaderResourceView = 0;
 			}
-
-			/*if(m_d3dTexture11)
-			{
-				m_d3dTexture11->Release();
-				m_d3dTexture11 = 0;
-			}*/
 
 			m_loaded = 0;
 		}

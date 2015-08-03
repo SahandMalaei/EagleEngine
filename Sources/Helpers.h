@@ -1,7 +1,10 @@
 #ifndef _HELPERS_H
 #define _HELPERS_H 1
 
-#include "Eagle.h"
+#include <string>
+
+#include <WinSock2.h>
+#include <Windows.h>
 
 #define FLOAT_TO_STRING(s) to_string((long float)s)
 #define LONG_TO_STRING(s) to_string((long)s)
@@ -300,11 +303,6 @@ namespace ProjectEagle
 	bool isStringAlphabetic(std::string s);
 	bool isStringWhitespace(std::string s);
 	bool isStringValidIdentifier(std::string s);
-
-	bool floatEquality(float number0, float number1);
-
-	BOOL WINAPI AnsiToUnicode(LPSTR ansiString, LPWSTR unicodeBuffer, DWORD unicodeBufferSize);
-	BOOL WINAPI UnicodeToAnsi(LPWSTR unicodeString, LPSTR  ansiBuffer, DWORD ansiBufferSize);
 
 	//int asciiHexToInt(string hexString);
 };

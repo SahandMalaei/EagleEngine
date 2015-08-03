@@ -1,4 +1,4 @@
-#include "Eagle.h"
+#include "FileIO.h"
 
 namespace ProjectEagle
 {
@@ -14,21 +14,21 @@ namespace ProjectEagle
 
 	void FileIO::openFileForRead(char *address)
 	{
-		file.open(address, ios::binary | ios::in);
+		file.open(address, std::ios::binary | std::ios::in);
 
 		readyToRead = 1;
 	}
 
 	void FileIO::openFileForWrite(char *address)
 	{
-		file.open(address, ios::binary | ios::out);
+		file.open(address, std::ios::binary | std::ios::out);
 
 		readyToWrite = 1;
 	}
 
 	void FileIO::openFile(char *address, DWORD mode)
 	{
-		file.open(address, ios::binary | ios::in | ios::out);
+		file.open(address, std::ios::binary | std::ios::in | std::ios::out);
 
 		readyToRead = 1;
 		readyToWrite = 1;

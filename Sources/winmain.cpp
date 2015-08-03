@@ -1,5 +1,3 @@
-// Created by Sahand Malaei Balasi
-
 #ifndef PLATFORM_WP8
 
 #include "Eagle.h"
@@ -7,7 +5,7 @@
 using namespace ProjectEagle;
 
 HINSTANCE hInstancee;
-HWND windowHandle, splashScreenHandle;
+HWND windowHandle;
 int nCmdShoww;
 
 EagleEngine eagle;
@@ -72,18 +70,6 @@ LRESULT WINAPI WinProc(HWND windowHandle, UINT msg, WPARAM wParam, LPARAM lParam
 
 			break;
 		}
-
-		/*case WM_SOCKET:
-		{
-		eagle.setNetworkMessageAvailablity(1);
-		WindowsNetworkMessage wnm;
-		wnm.message = msg;
-		wnm.wParam = wParam;
-		wnm.lParam = lParam;
-		eagle.setNetworkMessage(wnm);
-
-		break;
-		}*/
 	}
 
 	return DefWindowProc(windowHandle, msg, wParam, lParam);
@@ -97,8 +83,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	nCmdShoww = nCmdShow;
 	DWORD dwStyle, dwExStyle;
 	RECT windowRectangle;
-
-	//eagle = new EagleEngine();
 
 	if(!eagle.preinitializeEngine())
 	{

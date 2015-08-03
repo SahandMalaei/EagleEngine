@@ -1,7 +1,8 @@
 #ifndef _AUDIO_H
 #define _AUDIO_H 1
 
-#include "Eagle.h"
+#include <string>
+#include <vector>
 
 #define TONE_SINE 0
 #define TONE_SQUARE 1
@@ -14,8 +15,15 @@
 #define AUDIO_DEFAULT_MINIMUM_DISTANCE 1.0f
 #define AUDIO_DEFAULT_MAXIMUM_DISTANCE 10000.0f
 
+struct FMOD_SYSTEM;
+struct FMOD_SOUND;
+struct FMOD_CHANNEL;
+struct FMOD_DSP;
+
 namespace ProjectEagle
 {
+	class Vector3;
+
 	class SoundSample
     {
     private:

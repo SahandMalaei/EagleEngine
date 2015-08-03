@@ -331,30 +331,21 @@ namespace ProjectEagle
 		return r;
 	}
 
-	/*void EagleEngine::loadPostProcessingEffect(std::string address, std::string technique, int index)
+	BOOL WINAPI AnsiToUnicode(LPSTR ansiString, LPWSTR unicodeBuffer, DWORD unicodeBufferSize)
 	{
-		wchar_t addressBuffer[512];
-		AnsiToUnicode((char *)address.c_str(), addressBuffer, 512);
+		int returnValue = 0;
+		returnValue = MultiByteToWideChar(CP_ACP, 0, ansiString, -1, unicodeBuffer, unicodeBufferSize);
 
-		D3DXCreateEffectFromFile(d3ddev, addressBuffer, 0, 0, D3DXSHADER_DEBUG, 0, &postEffects[index], 0);
-		techniqueHandles[index] = postEffects[index]->GetTechniqueByName(technique.c_str());
-	}*/
-
-	/*void EagleEngine::setPictureFrameRateToDisplayAdapterDefault()
-	{
-		D3DDISPLAYMODE dm;
-		d3d->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &dm);
-
-		setPictureFrameRate(dm.RefreshRate);
+		return (returnValue != 0);
 	}
 
-	/*D3DFORMAT EagleEngine::getDisplayColorFormat()
+	BOOL WINAPI UnicodeToAnsi(LPWSTR unicodeString, LPSTR  ansiBuffer, DWORD ansiBufferSize)
 	{
-		D3DDISPLAYMODE dm;
-		d3d->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &dm);
+		int returnValue = 0;
+		returnValue = WideCharToMultiByte(CP_ACP, 0, unicodeString, -1, ansiBuffer, ansiBufferSize, NULL, NULL);
 
-		return dm.Format;
-	}*/
+		return (returnValue != 0);
+	}
 
 	// Logging system
 

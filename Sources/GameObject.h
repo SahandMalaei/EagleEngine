@@ -1,7 +1,8 @@
 #ifndef _GAMEOBJECT_H
 #define _GAMEOBJECT_H 1
 
-#include "Eagle.h"
+#include "Helpers.h"
+#include "Timer.h"
 
 #define GAMEOBJECT_DEFAULT 0x00000000
 #define GAMEOBJECT_SPRITE 0x00000001
@@ -9,6 +10,7 @@
 
 namespace ProjectEagle
 {
+
 	class GameObjectManagerClass;
 
 	class GameObject

@@ -3,6 +3,8 @@
 
 #include "../../Eagle.h"
 
+#include <Include/Box2D/Box2D.h>
+
 #define POSITION_COMPONENT_TYPE_ID 10
 #define MOVEMENT_COMPONENT_TYPE_ID 11
 #define PHYSICS_COMPONENT_TYPE_ID 12

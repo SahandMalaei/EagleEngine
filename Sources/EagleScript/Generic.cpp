@@ -1,4 +1,5 @@
-#include "EagleScript.h"
+#include "Generic.h"
+#include "../Eagle.h"
 
 namespace EagleScript
 {
@@ -332,8 +333,6 @@ namespace EagleScript
 
 	void throwError(std::string text)
 	{
-		//eagle.error(text);
-
 		console.print("Error : " + text, ConsoleOutput_Warning);
 	}
 };

@@ -1,7 +1,7 @@
 #ifndef _MESH_H
 #define _MESH_H 1
 
-#include "Eagle.h"
+/*#include "Eagle.h"
 
 namespace ProjectEagle
 {
@@ -36,6 +36,6 @@ namespace ProjectEagle
 		Vector3 getAcceleration();
 		void setAcceleration(Vector3 value);
 	};
-};
+};*/
 
 #endif

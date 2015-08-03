@@ -1,5 +1,12 @@
 #include "Eagle.h"
 
+#ifndef PLATFORM_WP8
+	#include <Include/FMOD/Windows/fmod.hpp>
+#else
+	#include <Include/FMOD/Windows Phone/fmod.hpp>
+#endif
+
+
 namespace ProjectEagle
 {
 	SoundSample::SoundSample()

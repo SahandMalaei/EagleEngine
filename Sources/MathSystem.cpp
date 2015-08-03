@@ -1,10 +1,15 @@
-#include "Eagle.h"
+#include "MathSystem.h"
+
+#include <cstdlib>
+#include <time.h>
+#include <math.h>
+
+#include "Helpers.h"
 
 namespace ProjectEagle
 {
 	MathSystem::MathSystem()
 	{
-		//seedRandom(time(0));
 		srand(time(0));
 	}
 
@@ -91,7 +96,7 @@ namespace ProjectEagle
 		return sqrt(dx * dx + dy * dy);
 	}
 
-	float MathSystem::distance(Vector2& v1, Vector2& v2)
+	float MathSystem::distance(Vector2 v1, Vector2 v2)
 	{
 		return distance(v1.x, v1.y, v2.x, v2.y);
 	}
@@ -101,9 +106,19 @@ namespace ProjectEagle
 		return sqrt(x * x + y * y);
 	}
 
-	float MathSystem::length(Vector2& v)
+	float MathSystem::length(Vector2 v)
 	{
 		return length(v.x, v.y);
+	}
+
+	float MathSystem::dotProduct(float x0, float y0, float x1, float y1)
+	{
+		return x0 * x1 + y0 * y1;
+	}
+
+	float MathSystem::dotProduct(Vector2 vector0, Vector2 vector1)
+	{
+		return vector0.x * vector1.x + vector0.y * vector1.y;
 	}
 
 	void MathSystem::seedRandom(int seed)
@@ -164,17 +179,23 @@ namespace ProjectEagle
 	{
 		//p'x = cos(theta) * (px-ox) - sin(theta) * (py-oy) + ox
         //p'y = sin(theta) * (px-ox) + cos(theta) * (py-oy) + oy
+
 		float s = sin(angle);
 		float c = cos(angle);
 
 		x -= centerX;
 		y -= centerY;
 
-		Vector2 p;
-		p.x = x * c - y * s + centerX;
-		p.y = x * s + y * c + centerY;
+		Vector2 rotatedPoint;
+		rotatedPoint.x = x * c - y * s + centerX;
+		rotatedPoint.y = x * s + y * c + centerY;
 
-		return p;
+		return rotatedPoint;
+	}
+
+	Vector2 MathSystem::rotatePoint(Vector2 pos, Vector2 center, float angle)
+	{
+		return rotatePoint(pos.x, pos.y, center.x, center.y, angle);
 	}
 
 	bool MathSystem::approximateEquals(float x, float y, float threshold)

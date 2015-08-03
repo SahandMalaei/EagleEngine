@@ -1,7 +1,18 @@
 #ifndef _RESOURCE_H
 #define _RESOURCE_H 1
 
-#include "Eagle.h"
+#include <string>
+
+#include <WinSock2.h>
+#include <Windows.h>
+
+#ifndef PLATFORM_WP8
+	#include <d3d11.h>
+#else
+	#include <d3d11_1.h>
+#endif
+
+#include "Helpers.h"
 
 enum ResourceType
 {
@@ -26,7 +37,7 @@ namespace ProjectEagle
 
 		int getType();
 
-		string getAddress();
+		std::string getAddress();
 
 		virtual void releaseData();
 

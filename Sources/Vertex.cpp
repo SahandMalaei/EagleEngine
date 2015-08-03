@@ -1,4 +1,9 @@
-#include "Eagle.h"
+#include "Vertex.h"
+
+#define COLOR_GET_B(color) (int)(((DWORD)color) & 0x0000ff)
+#define COLOR_GET_G(color) (int)((((DWORD)color) & 0x00ff00) / 0x000100)
+#define COLOR_GET_R(color) (int)((((DWORD)color) & 0xff0000) / 0x010000)
+#define COLOR_GET_A(color) (int)((((DWORD)color) & 0xff000000) / 0x01000000)
 
 namespace ProjectEagle
 {

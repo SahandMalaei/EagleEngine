@@ -4,28 +4,17 @@
 #ifndef _EAGLE_H
 #define _EAGLE_H 1
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <crtdbg.h>
-#include "ctime"
-#include "string"
-#include "sstream"
-#include "cstdlib"
-#include "list"
-
-#include <WinSock2.h>
-
+#include <time.h>
+#include <string>
+#include <list>
 #include <thread>
 #include <mutex>
-
-#include "time.h"
-#include <iostream>
-#include <windows.h>
-#include <time.h>
 #include <vector>
 #include <unordered_map>
 #include <map>
-#include <fstream>
+
+#include <WinSock2.h>
+#include <windows.h>
 
 #ifdef PLATFORM_WP8
 	#include <wrl/client.h>
@@ -36,7 +25,11 @@
 	#include "winmain.h"
 #endif
 
-#include <d3d11_1.h>
+#ifndef PLATFORM_WP8
+	#include <d3d11.h>
+#else
+	#include <d3d11_1.h>
+#endif
 
 #ifndef PLATFORM_WP8
 	#include <Include/DirectX/D3DX11.h>
@@ -48,18 +41,10 @@
 #include <DirectXMath.h>
 
 #ifndef PLATFORM_WP8
-	#include <Include/FMOD/Windows/fmod.hpp>
-#else
-	#include <Include/FMOD/Windows Phone/fmod.hpp>
-#endif
-
-#ifndef PLATFORM_WP8
 	#include <Include/tbb/tbb.h>
 
 	using namespace tbb;
 #endif
-
-#include <Include/Box2D/Box2D.h>
 
 /*#pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "d3d11.lib")
@@ -78,8 +63,6 @@ using namespace std;
 #include "Timer.h"
 #include "EagleNet.h"
 #include "Helpers.h"
-#include "KeysDef.h"
-#include "ButtonsDef.h"
 #include "InputSystem.h"
 #include "MathSystem.h"
 #include "Camera.h"
@@ -107,7 +90,7 @@ using namespace std;
 
 using namespace ProjectEagle;
 
-const std::string EAGLE_ENGINE_VERSION = "0.4.0.1";
+const std::string EAGLE_ENGINE_VERSION = "0.4.0.2";
 
 extern bool gameOver;
 extern bool preload();
@@ -260,6 +243,9 @@ namespace ProjectEagle
 
 	std::string wstrToStr(const std::wstring &wstr);
 	std::wstring strToWstr(const std::string& s);
+
+	BOOL WINAPI AnsiToUnicode(LPSTR ansiString, LPWSTR unicodeBuffer, DWORD unicodeBufferSize);
+	BOOL WINAPI UnicodeToAnsi(LPWSTR unicodeString, LPSTR ansiBuffer, DWORD ansiBufferSize);
 };
 
 extern EagleEngine eagle;

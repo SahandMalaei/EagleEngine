@@ -6,11 +6,6 @@
 #define COLOR_RGBA(r, g, b, a) ColorValue(r, g, b, a)
 #define COLOR_RGB(r, g, b) ColorValue(r, g, b)
 
-//#define COLOR_RGBA_DWORD(r, g, b, a) _COLOR_RGBA_DWORD(r, g, b, a)
-//#define COLOR_RGB_DWORD(r, g, b) _COLOR_RGB_DWORD(r, g, b)
-//#define _COLOR_RGBA_DWORD(r, g, b, a) D3DCOLOR_RGBA((int)r, (int)g, (int)b, (int)a)
-//#define _COLOR_RGB_DWORD(r, g, b) D3DCOLOR_XRGB((int)r, (int)g, (int)b)
-
 #define COLOR_GET_B(color) (int)(((DWORD)color) & 0x0000ff)
 #define COLOR_GET_G(color) (int)((((DWORD)color) & 0x00ff00) / 0x000100)
 #define COLOR_GET_R(color) (int)((((DWORD)color) & 0xff0000) / 0x010000)

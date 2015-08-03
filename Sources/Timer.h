@@ -1,18 +1,22 @@
-#pragma once
+#ifndef _TIMER_H
+#define _TIMER_H 1
+
 #include <time.h>
-#include <Eagle.h>
-//#include <Windows.h>
+
+#include <Windows.h>
+
 namespace ProjectEagle
 {
 	class Timer
 	{
 	private:
-		DWORD timerStart;
+		int timerStart;
 		LARGE_INTEGER timeCounter, frequency;
 
 	public:
 		Timer(void);
 		~Timer(void);
+
 		float getTimeSeconds();
 		float getPassedTimeSeconds();
 		float getTimeMilliseconds();
@@ -21,3 +25,5 @@ namespace ProjectEagle
 		bool stopWatch(float seconds);
 	};
 };
+
+#endif

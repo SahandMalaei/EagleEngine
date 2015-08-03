@@ -1,7 +1,7 @@
 #ifndef _GENERIC_H
 #define _GENERIC_H 1
 
-#include "EagleScript.h"
+#include <string>
 
 namespace EagleScript
 {

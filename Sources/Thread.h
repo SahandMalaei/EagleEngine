@@ -1,8 +1,6 @@
 #ifndef _THREAD_H
 #define _THREAD_H 1
 
-#include "Eagle.h"
-
 namespace ProjectEagle
 {
 	/*class Thread

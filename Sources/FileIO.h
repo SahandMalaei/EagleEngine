@@ -1,7 +1,8 @@
 #ifndef _FILEIO_H
 #define _FILEIO_H 1
 
-#include "Eagle.h"
+#include <iostream>
+#include <fstream>
 
 #define FILE_INPUT 0
 #define FILE_OUTPUT 1
@@ -10,12 +11,14 @@
 #define FILE_BINARY 0
 #define FILE_TEXT 1
 
+typedef unsigned long DWORD;
+
 namespace ProjectEagle
 {
 	class FileIO
 	{
 	private:
-		fstream file;
+		std::fstream file;
 
 		bool readyToWrite, readyToRead;
 

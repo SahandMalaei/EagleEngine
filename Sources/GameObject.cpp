@@ -1,4 +1,6 @@
-#include "Eagle.h"
+#include "GameObject.h"
+
+#include <cstdlib>
 
 namespace ProjectEagle
 {
@@ -28,8 +30,6 @@ namespace ProjectEagle
 		m_parentLastPosition.set(0, 0, 0);
 		m_drawPointer = drawGameObject;
 		m_objectType = GAMEOBJECT_DEFAULT;
-
-		m_frameTime = eagle.getFrameTimePointer();
 	}
 
 	GameObject::~GameObject()
@@ -186,7 +186,7 @@ namespace ProjectEagle
 		}
 	}
 
-	int GameObjectManagerClass::addObjectByValue(GameObject *object)
+	/*int GameObjectManagerClass::addObjectByValue(GameObject *object)
 	{
 		int returnValue = 0;
 
@@ -268,7 +268,7 @@ namespace ProjectEagle
 		m_gameObjectList[returnValue]->setID(returnValue);
 
 		return returnValue;
-	}
+	}*/
 
 	void GameObjectManagerClass::UpdateGameObjects()
 	{
@@ -302,7 +302,7 @@ namespace ProjectEagle
 	void GameObjectManagerClass::RemoveDeadGameObjects()
 	{
 		//return;
-		for(int i = 0; i < m_highestIndex + 1; ++i)
+		/*for(int i = 0; i < m_highestIndex + 1; ++i)
 		{
 			if(m_gameObjectList[i] == 0) continue;
 
@@ -343,7 +343,7 @@ namespace ProjectEagle
 
 				m_objectCount--;
 			}
-		}
+		}*/
 	}
 
 	GameObject *GameObjectManagerClass::getObjectByID(int ID)
