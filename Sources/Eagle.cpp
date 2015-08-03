@@ -24,10 +24,6 @@ namespace ProjectEagle
 
 		pauseMode = 0;
 
-		versionMajor = EAGLE_ENGINE_VERSION_MAJOR;
-		versionMinor = EAGLE_ENGINE_VERSION_MINOR;
-		revision = EAGLE_ENGINE_VERSION_REVISION;
-
 		gameOver = 0;
 
 		setAppTitle("Project Eagle");
@@ -70,15 +66,6 @@ namespace ProjectEagle
 				break;
 			}
 		}
-	}
-
-	std::string EagleEngine::getVersionText()
-	{
-		std::ostringstream s;
-
-		s << "Eagle Engine v" << versionMajor << "." << versionMinor << "." << revision;
-
-		return s.str();
 	}
 
 	void EagleEngine::message(std::string messageString, std::string title)
@@ -138,7 +125,7 @@ namespace ProjectEagle
 
 		initializeLoggingSystem();
 
-		outputLogEvent((char *)(getVersionText()).c_str());
+		outputLogEvent((char *)("Eagle Engine version " + getVersion()).c_str());
 		outputLogEvent("");
 
 		outputLogEvent("Initialization process started");
@@ -474,19 +461,9 @@ namespace ProjectEagle
 		appTitle = title;
 	}
 
-	int EagleEngine::getVersionMajor()
+	std::string EagleEngine::getVersion()
 	{
-		return versionMajor;
-	}
-
-	int EagleEngine::getVersionMinor()
-	{
-		return versionMinor;
-	}
-
-	int EagleEngine::getRevision()
-	{
-		return revision;
+		return EAGLE_ENGINE_VERSION;
 	}
 
 	float EagleEngine::getCoreFrameRate()

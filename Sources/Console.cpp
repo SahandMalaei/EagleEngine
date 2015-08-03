@@ -421,7 +421,7 @@ namespace ProjectEagle
 
 	void Console::printEngineVersion()
 	{
-		print(eagle.getVersionText());
+		print("Eagle Engine version " + eagle.getVersion());
 	}
 
 	void Console::printFrameRate()

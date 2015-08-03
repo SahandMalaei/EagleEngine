@@ -15,7 +15,8 @@ namespace ProjectEagle
 	{
 		D3D_FEATURE_LEVEL_11_0,
 		D3D_FEATURE_LEVEL_10_0,
-		D3D_FEATURE_LEVEL_9_3
+		D3D_FEATURE_LEVEL_9_3,
+		D3D_FEATURE_LEVEL_9_1
 	};
 
 	int d3d11FeatureLevelCount = ARRAY_SIZE(d3d11FeatureLevelList);
@@ -39,9 +40,11 @@ namespace ProjectEagle
 		m_graphicsAPIType = GraphicsAPI_Direct3D11;
 
 #ifndef PLATFORM_WP8
+
 		m_windowHandle = 0;
 
 		m_windowResizable = 0;
+
 #endif
 
 		m_lastPoint.x = 0;
@@ -69,16 +72,27 @@ namespace ProjectEagle
 		m_frameVertexBuffer_CurrentVertexIndex = 0;
 
 #ifndef PLATFORM_WP8
+
 		m_drawCallBufferSize = 30000;
+
 #else
+
 		m_drawCallBufferSize = 15000;
+
 #endif
+
 		m_drawCallBuffer = new DrawCallData[m_drawCallBufferSize];
+
 #ifndef PLATFORM_WP8
+
 		m_frameVertexBufferSize = 100000;
+
 #else
+
 		m_frameVertexBufferSize = 50000;
+
 #endif
+
 		m_frameVertexBuffer = new Vertex[m_frameVertexBufferSize];
 
 		m_renderingBufferedDrawCalls = 0;
@@ -126,24 +140,34 @@ namespace ProjectEagle
 	}
 
 #ifndef PLATFORM_WP8
+
 	ID3D11Device *GraphicsSystem::getD3DDevice11()
 	{
 		return m_d3dDevice11;
 	}
+
 #else
+
 	ID3D11Device1 *GraphicsSystem::getD3DDevice11()
 	{
 		return m_d3dDevice11.Get();
 	}
+
 #endif
 
 	ID3D11DeviceContext *GraphicsSystem::getD3DDevice11Context()
 	{
+
 #ifndef PLATFORM_WP8
+
 		return m_d3dDevice11Context;
+
 #else
+
 		return m_d3dDevice11Context.Get();
+
 #endif
+
 	}
 
 	void GraphicsSystem::preinitialize()
@@ -152,7 +176,9 @@ namespace ProjectEagle
 		{
 		case GraphicsAPI_Direct3D11:
 			{
+
 #ifndef PLATFORM_WP8
+
 				if(FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory1) ,(void**)&m_dxgiFactory)))
 				{
 					eagle.error("Failed to create the DXGIFactory");
@@ -188,7 +214,9 @@ namespace ProjectEagle
 				UnicodeToAnsi(adapterDesc.Description, m_adapterName, 128);
 
 				m_displayFormat = displayModes[numModes - 1].Format;
+
 #endif
+
 				break;
 			}
 		}
@@ -202,6 +230,7 @@ namespace ProjectEagle
 		m_multiSamplingQualityLevel = 0;
 
 #ifndef PLATFORM_WP8
+
 		if(m_multiSamplingEnabled)
 		{
 			for(int i = 1; i < 3; ++i)
@@ -249,32 +278,40 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			//eagle.error("Failed to create the Direct3D 11 swap chain. Error code : " + INT_TO_STRING(result));
+			eagle.error("Failed to create the Direct3D 11 swap chain. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
 
 #endif
+
 		result = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&m_backBufferTexture);
 
 		if(FAILED(result))
 		{
-			//eagle.error("Failed to get the swap chain back buffer. Error code : " + INT_TO_STRING(result));
+			eagle.error("Failed to get the swap chain back buffer. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
 
 #ifndef PLATFORM_WP8
+
 		result = m_d3dDevice11->CreateRenderTargetView(m_backBufferTexture, 0, &m_renderTargetView);
+
 #else
+
 		result = m_d3dDevice11->CreateRenderTargetView(m_backBufferTexture.Get(), 0, &m_renderTargetView);
+
 #endif
 
-		//if(m_backBufferTexture) m_backBufferTexture->Release();
+		/*if(m_backBufferTexture)
+		{
+			m_backBufferTexture->Release();
+		}*/
 
 		if(FAILED(result))
 		{
-			//eagle.error("Failed to create the render target view. Error code : " + INT_TO_STRING(result));
+			eagle.error("Failed to create the render target view. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
@@ -297,7 +334,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			//eagle.error("Failed to create the depth-stencil texture. Error code : " + INT_TO_STRING(result));
+			eagle.error("Failed to create the depth-stencil texture. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
@@ -328,7 +365,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			//eagle.error("Direct3D Depth-Stencil state creation failed with code " + INT_TO_STRING(result));
+			eagle.error("Failed to create the Depth-Stencil state. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
@@ -342,22 +379,30 @@ namespace ProjectEagle
 		depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 #ifndef PLATFORM_WP8
+
 		result = m_d3dDevice11->CreateDepthStencilView(m_depthStencilTexture, &depthStencilViewDesc, &m_depthStencilView);
+
 #else
+
 		result = m_d3dDevice11->CreateDepthStencilView(m_depthStencilTexture.Get(), &depthStencilViewDesc, &m_depthStencilView);
+
 #endif
 
 		if(FAILED(result))
 		{
-			//eagle.error("Failed to create the depth-stencil view. Error code : " + INT_TO_STRING(result));
+			eagle.error("Failed to create the depth-stencil view. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
 
 #ifndef PLATFORM_WP8
+
 		m_d3dDevice11Context->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+
 #else
+
 		m_d3dDevice11Context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
+
 #endif
 
 		D3D11_VIEWPORT viewport;
@@ -406,7 +451,9 @@ namespace ProjectEagle
 
 					return;
 				}
+
 #else
+
 				UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 				//creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 
@@ -487,16 +534,18 @@ namespace ProjectEagle
 				adapter->GetDesc(&adapterDesc);
 
 				UnicodeToAnsi(adapterDesc.Description, m_adapterName, 128);
+
 #endif
 
 				if(!createWindowSizeDependentObjects())
 				{
-					eagle.error("Failed to create the Direct3D 11 swap chain. Error code : " + INT_TO_STRING(result));
+					eagle.error("Failed to create the window size dependent objects.");
 
 					return;
 				}
 
 #ifndef PLATFORM_WP8
+
 				m_simpleVertexShader.compileVertexShaderFromFile("Data/Shaders/SimpleVertexShader.hlsl");
 
 				m_d3dDevice11Context->IASetInputLayout(m_simpleVertexShader.inputLayout);
@@ -506,7 +555,9 @@ namespace ProjectEagle
 				m_texturedVertexShader.compileVertexShaderFromFile("Data/Shaders/TexturedVertexShader.hlsl");
 
 				m_texturedPixelShader.compilePixelShaderFromFile("Data/Shaders/TexturedPixelShader.hlsl");
+
 #else
+
 				m_simpleVertexShader.loadVertexShaderFromFile("SimpleVertexShader.cso");
 
 				m_d3dDevice11Context->IASetInputLayout(m_simpleVertexShader.inputLayout);
@@ -516,6 +567,7 @@ namespace ProjectEagle
 				m_texturedVertexShader.loadVertexShaderFromFile("TexturedVertexShader.cso");
 
 				m_texturedPixelShader.loadPixelShaderFromFile("TexturedPixelShader.cso");
+
 #endif
 
 				D3D11_BUFFER_DESC bufferDesc;
@@ -549,7 +601,7 @@ namespace ProjectEagle
 					return;
 				}
 
-				m_blendMode = BlendMode_Additive;
+				m_blendMode = BlendMode_Normal;
 
 				// Normal blending
 
@@ -647,6 +699,7 @@ namespace ProjectEagle
 	}
 
 #ifdef PLATFORM_WP8
+
 	void GraphicsSystem::createWindowSizeDependentResources()
 	{
 		m_windowBounds = m_windowHandle->Bounds;
@@ -789,6 +842,7 @@ namespace ProjectEagle
 		m_renderTargetView = nullptr;
 		m_depthStencilView = nullptr;
 	}
+
 #endif
 
 	int GraphicsSystem::handleDeviceStatus()
@@ -804,6 +858,7 @@ namespace ProjectEagle
 		}
 
 #ifndef PLATFORM_WP8
+
 		m_renderTargetView->Release();
 		m_backBufferTexture->Release();
 		m_depthStencilView->Release();
@@ -888,7 +943,9 @@ namespace ProjectEagle
 				console.informationPanelPosition.y = -console.informationPanelHeight;
 			}
 		}
+
 #endif
+
 	}
 
 	bool GraphicsSystem::handleFullscreenStateChange()
@@ -926,6 +983,7 @@ namespace ProjectEagle
 		m_multiSamplingEnabled = 1;
 
 #endif
+
 	}
 
 	void GraphicsSystem::disableAntiAliasing()
@@ -951,6 +1009,7 @@ namespace ProjectEagle
 		m_multiSamplingEnabled = 0;
 
 #endif
+
 	}
 
 	void GraphicsSystem::toggleAntiAliasing()
@@ -974,6 +1033,7 @@ namespace ProjectEagle
 		}
 
 #endif
+
 	}
 
 	void GraphicsSystem::setAntiAliasingState(bool state)
@@ -1014,16 +1074,24 @@ namespace ProjectEagle
 
 	bool GraphicsSystem::isWindowResizable()
 	{
+
 #ifndef PLATFORM_WP8
+
 		return m_windowResizable;
+
 #else
+
 		return 0;
+
 #endif
+
 	}
 
 	void GraphicsSystem::setWindowResizable(bool value)
 	{
+
 #ifndef PLATFORM_WP8
+
 		m_windowResizable = value;
 
 		DWORD dwStyle = GetWindowLong(m_windowHandle, GWL_STYLE);
@@ -1036,7 +1104,9 @@ namespace ProjectEagle
 		}
 
 		SetWindowLong(m_windowHandle, GWL_STYLE, dwStyle);
+
 #endif
+
 	}
 
 	void GraphicsSystem::setIdentity()
@@ -2730,7 +2800,7 @@ namespace ProjectEagle
 
 	void GraphicsSystem::fillEllipse(float x, float y, int rx, int ry, float startAngle, float endAngle, ColorValue color, float depth)
 	{
-		const int stepCount = 42;
+		const int STEP_COUNT = 42;
 
 		float wrappedDifference = math.wrapAngleRadians(endAngle - startAngle);
 
@@ -2738,17 +2808,17 @@ namespace ProjectEagle
 
 		Vertex v[3];
 
-		for(int i = 0; i < stepCount; ++i)
+		for(int i = 0; i < STEP_COUNT; ++i)
 		{
-			float a0 = startAngle + (i - 1) * ((wrappedDifference) / stepCount);
-			v[0].x = cos(a0) * rx + x;
-			v[0].y = sin(a0) * ry + y;
+			float angle0 = startAngle + (i - 1) * ((wrappedDifference) / STEP_COUNT);
+			v[0].x = cos(angle0) * rx + x;
+			v[0].y = sin(angle0) * ry + y;
 			v[0].z = depth;
 			v[0].color = color;
 
-			float a1 = startAngle + (i) * ((wrappedDifference) / stepCount);
-			v[1].x = cos(a1) * rx + x;
-			v[1].y = sin(a1) * ry + y;
+			float angle1 = startAngle + (i) * ((wrappedDifference) / STEP_COUNT);
+			v[1].x = cos(angle1) * rx + x;
+			v[1].y = sin(angle1) * ry + y;
 			v[1].z = depth;
 			v[1].color = color;
 
@@ -2763,7 +2833,7 @@ namespace ProjectEagle
 
 	void GraphicsSystem::fillEllipseTransformed(float x, float y, int rx, int ry, float startAngle, float endAngle, ColorValue color, float depth)
 	{
-		const int stepCount = 42;
+		const int STEP_COUNT = 42;
 
 		float wrappedDifference = math.wrapAngleRadians(endAngle - startAngle);
 
@@ -2771,17 +2841,17 @@ namespace ProjectEagle
 
 		Vertex v[3];
 
-		for(int i = 0; i < stepCount; ++i)
+		for(int i = 0; i < STEP_COUNT; ++i)
 		{
-			float a0 = startAngle + (i - 1) * ((wrappedDifference) / stepCount);
-			v[0].x = cos(a0) * rx + x;
-			v[0].y = sin(a0) * ry + y;
+			float angle0 = startAngle + (i - 1) * ((wrappedDifference) / STEP_COUNT);
+			v[0].x = cos(angle0) * rx + x;
+			v[0].y = sin(angle0) * ry + y;
 			v[0].z = depth;
 			v[0].color = color;
 
-			float a1 = startAngle + (i) * ((wrappedDifference) / stepCount);
-			v[1].x = cos(a1) * rx + x;
-			v[1].y = sin(a1) * ry + y;
+			float angle1 = startAngle + (i) * ((wrappedDifference) / STEP_COUNT);
+			v[1].x = cos(angle1) * rx + x;
+			v[1].y = sin(angle1) * ry + y;
 			v[1].z = depth;
 			v[1].color = color;
 

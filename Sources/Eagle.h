@@ -1,4 +1,4 @@
-// In The Name of God
+// Eagle game engine
 // Created by Sahand Malaei Balasi
 
 #ifndef _EAGLE_H
@@ -107,9 +107,7 @@ using namespace std;
 
 using namespace ProjectEagle;
 
-#define EAGLE_ENGINE_VERSION_MAJOR 0
-#define EAGLE_ENGINE_VERSION_MINOR 4
-#define EAGLE_ENGINE_VERSION_REVISION 0
+const std::string EAGLE_ENGINE_VERSION = "0.4.0.1";
 
 extern bool gameOver;
 extern bool preload();
@@ -123,9 +121,9 @@ extern WPARAM currentKey;
 inline DWORD FtoDW(float f) {return *((DWORD*)&f);}
 
 #ifndef PLATFORM_WP8
-	#define EAGLE_DEFAULT_FRAME_RATE 60
+	const int EAGLE_DEFAULT_FRAME_RATE = 60;
 #else
-	#define EAGLE_DEFAULT_FRAME_RATE 60
+	const int EAGLE_DEFAULT_FRAME_RATE = 60;
 #endif
 
 #define EAGLE_DEFAULT_FRAME_TIME (1.0 / EAGLE_DEFAULT_FRAME_RATE)
@@ -151,8 +149,6 @@ namespace ProjectEagle
 #endif
 
 	private:
-		int versionMajor, versionMinor, revision;
-
 		bool initialized;
 
 		PlatformType targetPlatform;
@@ -229,10 +225,7 @@ namespace ProjectEagle
 		std::string getAppTitle();
 		void setAppTitle(std::string title);
 
-		int getVersionMajor();
-		int getVersionMinor();
-		int getRevision();
-		std::string getVersionText();
+		std::string getVersion();
 
 		float getCoreFrameRate();
 

@@ -5,7 +5,6 @@
 
 using namespace std;
 
-
 #define EAGLE_PARTICLE_SYSTEM_MINIMUM_PARTICLE_ALPHA 0.01
 
 namespace ProjectEagle
@@ -47,6 +46,7 @@ namespace ProjectEagle
 		float m_removalAlphaDecrement;
 		int m_particleCount, aliveParticleCount;
 		Vector2 m_acceleration;
+		Vector2 m_initialVelocity;
 		float m_noise;
 		float m_frictionFactor;
 		int m_particlesPerAdd;
@@ -121,6 +121,12 @@ namespace ProjectEagle
 
 		float getVelocity();
 		void setVelocity(float value);
+
+		Vector2 getAcceleration();
+		void setAcceleration(Vector2 value);
+
+		Vector2 getInitialVelocity();
+		void setInitialVelocity(Vector2 value);
 		
 		float getScale();
 		void setScale(float value);
@@ -132,9 +138,6 @@ namespace ProjectEagle
 		void setParticleCount(int value);
 		
 		int getAliveParticleCount();
-
-		Vector2 getAcceleration();
-		void setAcceleration(Vector2 value);
 
 		float getNoise();
 		void setNoise(float value);

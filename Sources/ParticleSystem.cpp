@@ -29,6 +29,7 @@ namespace ProjectEagle
 		m_maximumBlue = 1;
 		m_spread = 2 * pi;
 		m_velocity = 50.0f;
+		m_initialVelocity = Vector2(0, 0);
 		m_scale = 1.0f;
 		m_addTimer.reset();
 		m_addDelay = 1;
@@ -85,6 +86,7 @@ namespace ProjectEagle
 		m_maximumBlue = p.m_maximumBlue;
 		m_spread = p.m_spread;
 		m_velocity = p.m_velocity;
+		m_initialVelocity = p.m_initialVelocity;
 		m_scale = p.m_scale;
 		m_addTimer.reset();
 		m_addDelay = p.m_addDelay;
@@ -503,8 +505,8 @@ namespace ProjectEagle
 
 		//m_particleList[index].m_velocityX = vx * m_velocity * (rand() % (int)(m_velocityRandomFactor + 1.000001)) / 10;
 		//m_particleList[index].m_velocityY = vy * m_velocity * (rand() % (int)(m_velocityRandomFactor + 1.000001)) / 10;
-		m_particleList[index].velocityX = vx * m_velocity;
-		m_particleList[index].velocityY = vy * m_velocity;
+		m_particleList[index].velocityX = vx * m_velocity + m_initialVelocity.x;
+		m_particleList[index].velocityY = vy * m_velocity + m_initialVelocity.y;
 		//m_particleList[index].speedZ = vz * m_velocity * 0;
 
 		float r = math.randomFloat(m_minimumRed, m_maximumRed);
@@ -732,6 +734,26 @@ namespace ProjectEagle
 		m_velocity = value;
 	}
 
+	Vector2 ParticleSystem::getAcceleration()
+	{
+		return m_acceleration;
+	}
+
+	void ParticleSystem::setAcceleration(Vector2 value)
+	{
+		m_acceleration.set(value);
+	}
+
+	Vector2 ParticleSystem::getInitialVelocity()
+	{
+		return m_initialVelocity;
+	}
+
+	void ParticleSystem::setInitialVelocity(Vector2 value)
+	{
+		m_initialVelocity = value;
+	}
+
 	float ParticleSystem::getScale()
 	{
 		return m_scale;
@@ -765,16 +787,6 @@ namespace ProjectEagle
 	int ParticleSystem::getAliveParticleCount()
 	{
 		return aliveParticleCount;
-	}
-
-	Vector2 ParticleSystem::getAcceleration()
-	{
-		return m_acceleration;
-	}
-
-	void ParticleSystem::setAcceleration(Vector2 value)
-	{
-		m_acceleration.set(value);
 	}
 
 	float ParticleSystem::getNoise()
