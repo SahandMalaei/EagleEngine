@@ -309,4 +309,6 @@ namespace ProjectEagle
 	};
 };
 
+extern ProjectEagle::AudioSystem audio;
+
 #endif

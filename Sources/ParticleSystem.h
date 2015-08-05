@@ -1,7 +1,15 @@
 #ifndef _PARTICLEEMITTER_H
 #define _PARTICLEEMITTER_H 1
 
-#include "Eagle.h"
+#ifndef PLATFORM_WP8
+	#include <WinSock2.h>
+	#include <Windows.h>
+
+	#include <Include/tbb/tbb.h>
+#endif
+
+#include "Graphics.h"
+#include "GameObject.h"
 
 using namespace std;
 

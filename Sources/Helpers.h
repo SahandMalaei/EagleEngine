@@ -304,7 +304,10 @@ namespace ProjectEagle
 	bool isStringWhitespace(std::string s);
 	bool isStringValidIdentifier(std::string s);
 
-	//int asciiHexToInt(string hexString);
+	BOOL WINAPI AnsiToUnicode(LPSTR ansiString, LPWSTR unicodeBuffer, DWORD unicodeBufferSize);
+	BOOL WINAPI UnicodeToAnsi(LPWSTR unicodeString, LPSTR  ansiBuffer, DWORD ansiBufferSize);
+
+	void sleep(float seconds);
 };
 
 #endif

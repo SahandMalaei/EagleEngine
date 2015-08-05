@@ -1,7 +1,8 @@
 #ifndef _LIGHT_H
 #define _LIGHT_H 1
 
-#include "Eagle.h"
+#include "Helpers.h"
+#include "Graphics.h"
 
 #define LIGHT_POINT 0x00000001
 #define LIGHT_SPOT 0x00000002

@@ -799,10 +799,10 @@ namespace EagleAssembler
 
 	void throwCodeError(std::string text, int line)
 	{
-		eagle.outputLogEvent("");
-		eagle.error("Error in line " + INT_TO_STRING(line + 1) + " : " + text);
+		Debug::outputLogEvent("");
+		Debug::throwError("Error in line " + INT_TO_STRING(line + 1) + " : " + text);
 
-		eagle.message("Code Error");
+		Debug::throwMessage("Code Error");
 		//cout << "Error in line " << line + 1 << " : " << text << "\n";
 		//cout << sourceCode[line] << "\n";
 

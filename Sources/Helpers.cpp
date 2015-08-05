@@ -1,5 +1,7 @@
 #include "Helpers.h"
 
+#include <thread>
+
 namespace ProjectEagle
 {
 	Vector2::Vector2()
@@ -905,65 +907,24 @@ namespace ProjectEagle
 		return 1;
 	}
 
-	/*int asciiHexToInt(string hexString)
+	BOOL WINAPI AnsiToUnicode(LPSTR ansiString, LPWSTR unicodeBuffer, DWORD unicodeBufferSize)
 	{
-		if(hexString.length() < 3) return 0;
+		int returnValue = 0;
+		returnValue = MultiByteToWideChar(CP_ACP, 0, ansiString, -1, unicodeBuffer, unicodeBufferSize);
 
-		if(hexString[0] != '0' || (hexString[1] != 'x' && hexString[1] != 'X')) return 0;
+		return (returnValue != 0);
+	}
 
-		int value = 0;
+	BOOL WINAPI UnicodeToAnsi(LPWSTR unicodeString, LPSTR  ansiBuffer, DWORD ansiBufferSize)
+	{
+		int returnValue = 0;
+		returnValue = WideCharToMultiByte(CP_ACP, 0, unicodeString, -1, ansiBuffer, ansiBufferSize, NULL, NULL);
 
-		int power = 0;
+		return (returnValue != 0);
+	}
 
-		for(int i = hexString.length() - 1; i > 1; --i)
-		{
-			string currentCharacter = "";
-			currentCharacter += hexString[i];
-			
-			switch(currentCharacter[0])
-			{
-			case 'A':
-			case 'a':
-				currentCharacter = "10";
-
-				break;
-
-			case 'B':
-			case 'b':
-				currentCharacter = "11";
-
-				break;
-
-			case 'C':
-			case 'c':
-				currentCharacter = "12";
-
-				break;
-
-			case 'D':
-			case 'd':
-				currentCharacter = "13";
-
-				break;
-
-			case 'E':
-			case 'e':
-				currentCharacter = "14";
-
-				break;
-
-			case 'F':
-			case 'f':
-				currentCharacter = "15";
-
-				break;
-			}
-
-			value += power(16, power) * atoi(currentCharacter.c_str());
-
-			power++;
-		}
-
-		return value;
-	}*/
+	void sleep(float seconds)
+	{
+		std::this_thread::sleep_for(std::chrono::microseconds(int(seconds * 1000000)));
+	}
 };

@@ -1,4 +1,11 @@
-#include "../../Eagle.h"
+#include "DynamicsSystem.h"
+
+#include "Common.h"
+#include "RenderingSystem.h"
+
+#define EAGLE_DEFAULT_FRAME_RATE 60
+
+static ProjectEagle::Timer timer;
 
 namespace ProjectEagle
 {
@@ -66,7 +73,7 @@ namespace ProjectEagle
 #ifndef PLATFORM_WP8
 	void ParallelDynamicsSystemUpdate::operator() (const tbb::blocked_range<int>& r) const
 	{
-		DWORD currentTime = eagle.getTimer()->getPassedTimeMilliseconds();
+		DWORD currentTime = timer.getPassedTimeMilliseconds();
 
 		//for(int i = r.begin(); i != r.end(); ++i)
 

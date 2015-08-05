@@ -1,12 +1,8 @@
 #ifndef _INPUT_H
 #define _INPUT_H 1
 
-#include "Eagle.h"
-
-#ifndef PLATFORM_WP8
-	#include <Include/DirectX/dinput.h>
-	#include <Include/DirectX/dinputd.h>
-#endif
+#include "Helpers.h"
+#include "Timer.h"
 
 #define SAFE_DELETE(p){if(p){delete (p); (p) = NULL;}}
 #define SAFE_RELEASE(p){if(p){(p)->Release(); (p) = NULL;}}
@@ -30,22 +26,20 @@ namespace ProjectEagle
 
 	class InputSystem
 	{
+
 #ifdef PLATFORM_WP8
+
 		friend ref class ApplicationWP8;
+
 #endif
 		friend class EagleEngine;
 
 	private:
+
 #ifndef PLATFORM_WP8
+
 		HWND m_windowHandle;
 
-		IDirectInput8 *m_directInput;
-		IDirectInputDevice8 *m_keyboard;
-		IDirectInputDevice8 *m_joystick;
-		IDirectInputDevice8 *m_mouse;
-
-		DIMOUSESTATE m_mouseState;
-		DIJOYSTATE2 m_joystickState;
 #endif
 
 		bool m_joystickValidity;
@@ -59,6 +53,7 @@ namespace ProjectEagle
 		int m_keyTotalPressCount[256];
 
 #ifdef PLATFORM_WP8
+
 		bool m_touchList[INPUT_SUPPORTED_TOUCH_COUNT];
 		bool m_oldTouchList[INPUT_SUPPORTED_TOUCH_COUNT];
 
@@ -67,6 +62,7 @@ namespace ProjectEagle
 		bool m_backButtonPressed;
 
 		bool m_suppressBackButtonHandler;
+
 #endif
 
 		bool m_oldJoystickButtons[128];
@@ -74,28 +70,36 @@ namespace ProjectEagle
 		short m_keySequence[INPUT_MAX_KEY_SEQUENCE_LENGTH];
 
 #ifndef PLATFORM_WP8
+
 		Vector2 m_mousePosition;
 		Vector2 m_mouseMove;
+
 #else
+
 		Vector2 m_touchPositionList[INPUT_SUPPORTED_TOUCH_COUNT];
 		int m_touchIDList[INPUT_SUPPORTED_TOUCH_COUNT];
 		Vector2 m_touchMoveList[INPUT_SUPPORTED_TOUCH_COUNT];
+
 #endif
 
 
 #ifndef PLATFORM_WP8
+
 		bool m_oldButtons[4];
 		float m_buttonHoldDuration[256];
 		float m_buttonHoldStart[256];
 		short m_buttonTapCount[4];
 		short m_buttonTapFrequency[4];
 		int m_buttonTotalPressCount[4];
+
 #else
+
 		float m_touchHoldDuration[INPUT_SUPPORTED_TOUCH_COUNT];
 		float m_touchHoldStart[INPUT_SUPPORTED_TOUCH_COUNT];
 		int m_touchTapCount[INPUT_SUPPORTED_TOUCH_COUNT];
 		int m_touchTapFrequency[INPUT_SUPPORTED_TOUCH_COUNT];
 		int m_touchTotalPressCount[INPUT_SUPPORTED_TOUCH_COUNT];
+
 #endif
 
 		int m_wheelMove;
@@ -114,6 +118,7 @@ namespace ProjectEagle
 		void resetKeyStates();
 
 #ifdef PLATFORM_WP8
+
 		bool m_gyrometerPresent;
 		bool m_accelerometerPresent;
 		bool m_inclinometerPresent;
@@ -121,6 +126,7 @@ namespace ProjectEagle
 		Vector3 m_gyrometerData;
 		Vector3 m_accelerometerData;
 		Vector3 m_inclinometerData;
+
 #endif
 
 	public:
@@ -131,6 +137,7 @@ namespace ProjectEagle
 		bool getJoystickButtonState(int b);
 
 #ifndef PLATFORM_WP8
+
 		Vector2 getMousePosition();
 
 		bool getMouseButtonState(MouseButton button);
@@ -149,7 +156,9 @@ namespace ProjectEagle
 		int getMouseButtonTotalPressCount(MouseButton button);
 
 		Vector2 getMouseMove();
+
 #else
+
 		Vector2 getMousePosition(int touchID = INPUT_TOUCH_ANY);
 
 		bool getMouseButtonState(int touchID = INPUT_TOUCH_ANY);
@@ -173,6 +182,7 @@ namespace ProjectEagle
 
 		void suppressBackButtonHandling();
 		void dontSuppressBackButtonHandling();
+
 #endif
 
 		bool isKeyDown(KeyboardKey key);
@@ -208,6 +218,7 @@ namespace ProjectEagle
 		void waitForKeyPress();
 
 #ifdef PLATFORM_WP8
+
 		bool isGyrometerPresent();
 		bool isAccelerometerPresent();
 		bool isInclinometerPresent();
@@ -215,16 +226,12 @@ namespace ProjectEagle
 		Vector3 getGyrometerData();
 		Vector3 getAccelerometerData();
 		Vector3 getInclinometerData();
+
 #endif
+
 	};
 
-#ifndef PLATFORM_WP8
-	struct DI_ENUM_CONTEXT
-	{
-		DIJOYCONFIG* pPreferredJoyConfig;
-		bool bPreferredJoyConfigValid;
-	};
-#endif
+	int dikToAscii(DWORD scancode);
 
 	enum KeyboardKey
 	{
@@ -331,5 +338,7 @@ namespace ProjectEagle
 		Mouse_Middle = 2
 	};
 };
+
+extern ProjectEagle::InputSystem input;
 
 #endif

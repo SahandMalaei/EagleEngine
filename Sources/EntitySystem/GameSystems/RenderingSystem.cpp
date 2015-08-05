@@ -1,4 +1,16 @@
-#include "../../Eagle.h"
+#include "RenderingSystem.h"
+
+#include "../../MathSystem.h"
+#include "../../ResourceManager.h"
+
+#include "Common.h"
+#include "DynamicsSystem.h"
+
+#define EAGLE_DEFAULT_FRAMERATE 60
+
+static ProjectEagle::Timer timer;
+
+extern ProjectEagle::ResourceManagerClass resourceManager;
 
 namespace ProjectEagle
 {
@@ -225,7 +237,7 @@ namespace ProjectEagle
 
 		particleList[index].quickFade = 0;
 
-		particleList[index].creationTime = eagle.getTimer()->getPassedTimeMilliseconds();
+		particleList[index].creationTime = timer.getPassedTimeMilliseconds();
 
 		particleList[index].accelerationX = acceleration.x;
 		particleList[index].accelerationY = acceleration.y;
@@ -283,7 +295,7 @@ namespace ProjectEagle
 #ifndef PLATFORM_WP8
 	void ParallelParticleEmitterUpdate::operator() (const tbb::blocked_range<int>& r) const
 	{
-		DWORD currentTime = eagle.getTimer()->getPassedTimeMilliseconds();
+		DWORD currentTime = timer.getPassedTimeMilliseconds();
 
 		float frictionEffect = 1.0f - (1.0f - particleEmitter->frictionFactor) * (frameTime);
 		float aliveParticleAlphaDecrement = particleEmitter->alphaDecrement * (frameTime);

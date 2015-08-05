@@ -1,4 +1,4 @@
-#include "../EagleScript.h"
+#include "../../Eagle.h"
 
 using namespace EagleScript;
 using namespace EagleVirtualMachine;
@@ -266,17 +266,17 @@ namespace EagleScriptCompiler
 
 	void messageScriptFunction(EagleVirtualMachine::Script *script)
 	{
-		eagle.message(getScriptParameterAsString(0, script));
+		Debug::throwMessage(getScriptParameterAsString(0, script));
 	}
 
 	void errorScriptFunction(EagleVirtualMachine::Script *script)
 	{
-		eagle.error(getScriptParameterAsString(0, script));
+		Debug::throwError(getScriptParameterAsString(0, script));
 	}
 
 	void outputLogEventScriptFunction(EagleVirtualMachine::Script *script)
 	{
-		eagle.outputLogEvent((char *)getScriptParameterAsString(0, script).c_str());
+		Debug::outputLogEvent((char *)getScriptParameterAsString(0, script).c_str());
 	}
 
 	void shutdownScriptFunction(EagleVirtualMachine::Script *script)

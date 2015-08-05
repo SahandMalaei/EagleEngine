@@ -7,11 +7,7 @@
 #include <time.h>
 #include <string>
 #include <list>
-#include <thread>
-#include <mutex>
 #include <vector>
-#include <unordered_map>
-#include <map>
 
 #include <WinSock2.h>
 #include <windows.h>
@@ -23,27 +19,6 @@
 	#include "WP8.h"
 #else
 	#include "winmain.h"
-#endif
-
-#ifndef PLATFORM_WP8
-	#include <d3d11.h>
-#else
-	#include <d3d11_1.h>
-#endif
-
-#ifndef PLATFORM_WP8
-	#include <Include/DirectX/D3DX11.h>
-	#include <d3dcompiler.h>
-	#include <Include/DirectX/dinput.h>
-	#include <Include/DirectX/dinputd.h>
-#endif
-
-#include <DirectXMath.h>
-
-#ifndef PLATFORM_WP8
-	#include <Include/tbb/tbb.h>
-
-	using namespace tbb;
 #endif
 
 /*#pragma comment(lib, "winmm.lib")
@@ -59,6 +34,7 @@
 
 using namespace std;
 
+#include "Debug.h"
 #include "Thread.h"
 #include "Timer.h"
 #include "EagleNet.h"
@@ -68,9 +44,7 @@ using namespace std;
 #include "Camera.h"
 #include "Audio.h"
 #include "FileIO.h"
-#include "Vertex.h"
 #include "Resource.h"
-#include "Shader.h"
 #include "Graphics.h"
 #include "ResourceManager.h"
 #include "GameObject.h"
@@ -84,13 +58,10 @@ using namespace std;
 #include "EagleScript/EagleScript.h"
 
 #include "EntitySystem/EntitySystem.h"
-#include "EntitySystem/GameSystems/Common.h"
-#include "EntitySystem/GameSystems/DynamicsSystem.h"
-#include "EntitySystem/GameSystems/RenderingSystem.h"
 
 using namespace ProjectEagle;
 
-const std::string EAGLE_ENGINE_VERSION = "0.4.0.2";
+const std::string EAGLE_ENGINE_VERSION = "0.4.0.3";
 
 extern bool gameOver;
 extern bool preload();
@@ -154,18 +125,6 @@ namespace ProjectEagle
 
 		float frameTime;
 
-		// Logging system
-
-		FILE *logFile;
-
-		bool loggingSystemEnabled;
-		bool loggingSystemInitialized;
-
-		void initializeLoggingSystem();
-		void shutdownLoggingSystem();
-
-		std::vector<std::string> logStringList;
-
 		bool errorEncountered;
 
 		Timer timer;
@@ -189,9 +148,6 @@ namespace ProjectEagle
 		PlatformType getTargetPlatform();
 		void setTargetPlatform(PlatformType target);
 
-		void message(std::string messageString, std::string title = "Project Eagle");
-		void error(std::string messageString, std::string title = "ERROR");
-
 		float getPictureFrameRate();
 		float getCalculationsRate();
 
@@ -214,15 +170,6 @@ namespace ProjectEagle
 
 		bool getProcessorSaving();
 		void setProcessorSaving(bool value);
-
-		// Logging system
-
-		void outputLogEvent(std::string eventMessage);
-
-		void disableLoggingSystem();
-		void enableLoggingSystem();
-
-		bool isLoggingSystemEnabled();
 
 		float getFrameTime();
 		float *getFrameTimePointer();

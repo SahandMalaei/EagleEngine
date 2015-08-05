@@ -1,4 +1,6 @@
-#include "Eagle.h"
+#include "Camera.h"
+
+#include "MathSystem.h"
 
 namespace ProjectEagle
 {
@@ -54,8 +56,8 @@ namespace ProjectEagle
 
 	void Camera::initialize()
 	{
-		m_aspectRatio = ((float)graphics.getScreenWidth()) / ((float)graphics.getScreenHeight());
-		m_target = Vector3((float)graphics.getScreenWidth() / 2, (float)graphics.getScreenHeight() / 2, 0.0f);
+		m_aspectRatio = m_viewportDimensions.x / m_viewportDimensions.y;
+		m_target = Vector3((float)m_viewportDimensions.x / 2.0, m_viewportDimensions.y / 2.0, 0.0f);
 
 		resetPosition();
 	}
@@ -112,81 +114,79 @@ namespace ProjectEagle
 		m_fov = value;
 	}
 
+	Vector2 Camera::getViewportDimensions()
+	{
+		return m_viewportDimensions;
+	}
+
+	void Camera::setViewportDimensions(Vector2 dimensions)
+	{
+		m_viewportDimensions = dimensions;
+	}
+
 	void Camera::update()
 	{
-		switch(graphics.getGraphicsAPIType())
+		m_aspectRatio = m_viewportDimensions.x / m_viewportDimensions.y;
+
+		float screenWidth, screenHeight;
+
+		screenWidth = m_viewportDimensions.x;
+		screenHeight = m_viewportDimensions.y;
+
+		m_View = DirectX::XMMatrixIdentity();
+
+		m_upXM = XMVector(0.0f, 1.0f, 0.0f);
+		m_rightXM = XMVector(1.0f, 0.0f, 0.0f);
+		m_lookXM = XMVector(0.0f, 0.0f, 1.0f);
+
+		DirectX::XMMATRIX yawMatrix;
+		yawMatrix = DirectX::XMMatrixRotationAxis(m_upXM, m_yaw);
+		m_lookXM = DirectX::XMVector3TransformCoord(m_lookXM, yawMatrix);
+		m_rightXM = DirectX::XMVector3TransformCoord(m_rightXM, yawMatrix);
+
+		DirectX::XMMATRIX pitchMatrix;
+		pitchMatrix = DirectX::XMMatrixRotationAxis(m_rightXM, m_pitch);
+		m_lookXM = DirectX::XMVector3TransformCoord(m_lookXM, pitchMatrix);
+		m_upXM = DirectX::XMVector3TransformCoord(m_upXM, pitchMatrix);
+
+		DirectX::XMMATRIX rollMatrix;
+		rollMatrix = DirectX::XMMatrixRotationAxis(m_lookXM, m_roll);
+		m_rightXM = DirectX::XMVector3TransformCoord(m_rightXM, rollMatrix);
+		m_upXM = DirectX::XMVector3TransformCoord(m_upXM, rollMatrix);
+
+		if(m_type == CameraType_FreeLook)
 		{
-		case GraphicsAPI_Direct3D11:
-			{
-				m_aspectRatio = ((float)graphics.getScreenWidth()) / ((float)graphics.getScreenHeight());
+			DirectX::XMVECTOR positionVector = XMVector((m_position.x - screenWidth / 2.0) / (screenHeight / 2.0), (m_position.y) / (-screenHeight / 2) + 1, m_position.z / (screenHeight / 2.0));
 
-				float screenWidth, screenHeight;
+			m_View = DirectX::XMMatrixSet(
+				DirectX::XMVectorGetX(m_rightXM), DirectX::XMVectorGetX(m_upXM), DirectX::XMVectorGetX(m_lookXM), 0,
+				DirectX::XMVectorGetY(m_rightXM), DirectX::XMVectorGetY(m_upXM), DirectX::XMVectorGetY(m_lookXM), 0,
+				DirectX::XMVectorGetZ(m_rightXM), DirectX::XMVectorGetZ(m_upXM), DirectX::XMVectorGetZ(m_lookXM), 0,
+				- DirectX::XMVectorGetX(DirectX::XMVector3Dot(positionVector, m_rightXM)),
+				- DirectX::XMVectorGetX(DirectX::XMVector3Dot(positionVector, m_upXM)),
+				- DirectX::XMVectorGetX(DirectX::XMVector3Dot(positionVector, m_lookXM)),
+				1);
 
-				screenWidth = graphics.getScreenWidth();
-				screenHeight = graphics.getScreenHeight();
+			/*m_View = DirectX::XMMatrixSet(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			- XMVectorToVector3(positionVector).x,
+			- XMVectorToVector3(positionVector).y,
+			- XMVectorToVector3(positionVector).z,
+			1);*/
 
-				m_View = DirectX::XMMatrixIdentity();
-
-				m_upXM = XMVector(0.0f, 1.0f, 0.0f);
-				m_rightXM = XMVector(1.0f, 0.0f, 0.0f);
-				m_lookXM = XMVector(0.0f, 0.0f, 1.0f);
-
-				DirectX::XMMATRIX yawMatrix;
-				yawMatrix = DirectX::XMMatrixRotationAxis(m_upXM, m_yaw);
-				m_lookXM = DirectX::XMVector3TransformCoord(m_lookXM, yawMatrix);
-				m_rightXM = DirectX::XMVector3TransformCoord(m_rightXM, yawMatrix);
-
-				DirectX::XMMATRIX pitchMatrix;
-				pitchMatrix = DirectX::XMMatrixRotationAxis(m_rightXM, m_pitch);
-				m_lookXM = DirectX::XMVector3TransformCoord(m_lookXM, pitchMatrix);
-				m_upXM = DirectX::XMVector3TransformCoord(m_upXM, pitchMatrix);
-
-				DirectX::XMMATRIX rollMatrix;
-				rollMatrix = DirectX::XMMatrixRotationAxis(m_lookXM, m_roll);
-				m_rightXM = DirectX::XMVector3TransformCoord(m_rightXM, rollMatrix);
-				m_upXM = DirectX::XMVector3TransformCoord(m_upXM, rollMatrix);
-
-				if(m_type == CameraType_FreeLook)
-				{
-					DirectX::XMVECTOR positionVector = XMVector((m_position.x - screenWidth / 2.0) / (screenHeight / 2.0), (m_position.y) / (-screenHeight / 2) + 1, m_position.z / (screenHeight / 2.0));
-
-					m_View = DirectX::XMMatrixSet(
-						DirectX::XMVectorGetX(m_rightXM), DirectX::XMVectorGetX(m_upXM), DirectX::XMVectorGetX(m_lookXM), 0,
-						DirectX::XMVectorGetY(m_rightXM), DirectX::XMVectorGetY(m_upXM), DirectX::XMVectorGetY(m_lookXM), 0,
-						DirectX::XMVectorGetZ(m_rightXM), DirectX::XMVectorGetZ(m_upXM), DirectX::XMVectorGetZ(m_lookXM), 0,
-						- DirectX::XMVectorGetX(DirectX::XMVector3Dot(positionVector, m_rightXM)),
-						- DirectX::XMVectorGetX(DirectX::XMVector3Dot(positionVector, m_upXM)),
-						- DirectX::XMVectorGetX(DirectX::XMVector3Dot(positionVector, m_lookXM)),
-						1);
-
-					/*m_View = DirectX::XMMatrixSet(
-						1, 0, 0, 0,
-						0, 1, 0, 0,
-						0, 0, 1, 0,
-						- XMVectorToVector3(positionVector).x,
-						- XMVectorToVector3(positionVector).y,
-						- XMVectorToVector3(positionVector).z,
-						1);*/
-
-				}
-				else if(m_type == CameraType_LookAt)
-				{
-					DirectX::XMVECTOR eyeVector, targetVector;
-					eyeVector = XMVector((m_position.x - screenWidth / 2.0) / (screenHeight / 2.0), (m_position.y) / (-screenHeight / 2) + 1, m_position.z / (screenHeight / 2.0));
-					targetVector = XMVector((m_target.x - screenWidth / 2.0) / (screenHeight / 2.0), (m_target.y) / (-screenHeight / 2) + 1, m_target.z / (screenHeight / 2.0));
-
-					m_View = DirectX::XMMatrixLookAtLH(eyeVector, targetVector, m_upXM);
-				}
-
-				graphics.setViewTransform(&m_View);
-
-				m_Projection = DirectX::XMMatrixPerspectiveFovLH(m_fov, m_aspectRatio, m_nearRange, m_farRange);
-
-				graphics.setProjectionTransform(&m_Projection);
-
-				break;
-			}
 		}
+		else if(m_type == CameraType_LookAt)
+		{
+			DirectX::XMVECTOR eyeVector, targetVector;
+			eyeVector = XMVector((m_position.x - screenWidth / 2.0) / (screenHeight / 2.0), (m_position.y) / (-screenHeight / 2) + 1, m_position.z / (screenHeight / 2.0));
+			targetVector = XMVector((m_target.x - screenWidth / 2.0) / (screenHeight / 2.0), (m_target.y) / (-screenHeight / 2) + 1, m_target.z / (screenHeight / 2.0));
+
+			m_View = DirectX::XMMatrixLookAtLH(eyeVector, targetVector, m_upXM);
+		}
+
+		m_Projection = DirectX::XMMatrixPerspectiveFovLH(m_fov, m_aspectRatio, m_nearRange, m_farRange);
 	}
 
 	void Camera::moveForward(float amount)
@@ -352,7 +352,7 @@ namespace ProjectEagle
 
 	void Camera::resetPosition()
 	{
-		float z = (-sqrt2 - 1) * graphics.getScreenHeight() / 2.0;
-		m_position = Vector3((float)graphics.getScreenWidth() / 2.0, graphics.getScreenHeight() / 2.0, z);
+		float z = (-sqrt2 - 1) * m_viewportDimensions.y / 2.0;
+		m_position = Vector3(m_viewportDimensions.x / 2.0, m_viewportDimensions.y / 2.0, z);
 	}
 };

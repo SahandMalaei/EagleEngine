@@ -1,7 +1,11 @@
 #ifndef _UI_H
 #define _UI_H 1
 
-#include "Eagle.h"
+#include "Helpers.h"
+#include "Graphics.h"
+#include "InputSystem.h"
+#include "Sprite.h"
+#include "Font.h"
 
 #define BUTTON_UP 0
 #define BUTTON_OVER 1

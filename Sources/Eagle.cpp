@@ -1,5 +1,7 @@
 #include "Eagle.h"
 
+#include <thread>
+
 namespace ProjectEagle
 {
 	EagleEngine::EagleEngine()
@@ -32,11 +34,7 @@ namespace ProjectEagle
 
 		frameTime = 0;
 
-		logStringList.reserve(256);
-
 		errorEncountered = 0;
-
-		loggingSystemEnabled = 1;
 	}
 
 	EagleEngine::~EagleEngine()
@@ -68,67 +66,16 @@ namespace ProjectEagle
 		}
 	}
 
-	void EagleEngine::message(std::string messageString, std::string title)
-	{
-#ifndef PLATFORM_WP8
-		wchar_t messageBuffer[512];
-		AnsiToUnicode((char *)messageString.c_str(), messageBuffer, 512);
-
-		wchar_t titleBuffer[512];
-		AnsiToUnicode((char *)title.c_str(), titleBuffer, 512);
-
-		MessageBox(getWindowHandle(), messageBuffer, titleBuffer, MB_OK);
-#else
-		OutputDebugString((messageString + "\n").c_str());
-#endif
-	}
-
-	void EagleEngine::error(std::string messageString, std::string title)
-	{
-#ifdef PLATFORM_WP8
-		OutputDebugString((messageString + "\n").c_str());
-#endif
-		outputLogEvent("");
-		if(messageString != "") outputLogEvent((char *)(messageString).c_str());
-		if(messageString != "") outputLogEvent("Shutting down...");
-
-		cout << "Error : " << messageString << "\n";
-
-		shutdownLoggingSystem();
-
-		if(initialized)
-		{
-			console.clear();
-			console.print("An error has occurred");
-			console.print(messageString);
-			console.print("Press any key to continue");
-
-			errorEncountered = 1;
-
-#ifndef PLATFORM_WP8
-			input.waitForKeyPress();
-#endif
-
-			exit(EXIT_FAILURE);
-
-			shutdown();
-		}
-		else
-		{
-			exit(EXIT_FAILURE);
-		}
-	}
-
 	bool EagleEngine::preinitializeEngine()
 	{
 		graphics.preinitialize();
 
-		initializeLoggingSystem();
+		Debug::initializeLoggingSystem();
 
-		outputLogEvent((char *)("Eagle Engine version " + getVersion()).c_str());
-		outputLogEvent("");
+		Debug::outputLogEvent((char *)("Eagle Engine version " + getVersion()).c_str());
+		Debug::outputLogEvent("");
 
-		outputLogEvent("Initialization process started");
+		Debug::outputLogEvent("Initialization process started");
 
 		timer.reset();
 
@@ -137,10 +84,13 @@ namespace ProjectEagle
 
 	int EagleEngine::initializeEngine(int width, int height, bool fullscreen)
 	{
+
 #ifndef PLATFORM_WP8
+
 		graphics.m_windowHandle = windowHandle;
+
 #endif
-		outputLogEvent("Eagle engine successfully initialized");
+		Debug::outputLogEvent("Eagle engine successfully initialized");
 
 		return 1;
 	}
@@ -149,49 +99,49 @@ namespace ProjectEagle
 	{
 		input.initialize();
 
-		eagle.outputLogEvent("Input system has been initialized");
+		Debug::outputLogEvent("Input system has been initialized");
 
 		gameObjectManager = new GameObjectManagerClass();
 
-		eagle.outputLogEvent("GameObjectManager has been initialized");
+		Debug::outputLogEvent("GameObjectManager has been initialized");
 
 		graphics.initialize();
 
-		eagle.outputLogEvent("Graphics system has been initialized");
+		Debug::outputLogEvent("Graphics system has been initialized");
 
 		resourceManager.initialize();
 
-		eagle.outputLogEvent("ResourceManager has been initialized");
+		Debug::outputLogEvent("ResourceManager has been initialized");
 
 		if(!audio.initialize()) 
 		{
-			eagle.error("Error initializing the Audio System");
+			Debug::throwError("Error initializing the Audio System");
 		}
 
-		eagle.outputLogEvent("Audio system has been initialized");
+		Debug::outputLogEvent("Audio system has been initialized");
 
 		if(!console.initialize()) 
 		{
-			eagle.error("Error initializing the Console");
+			Debug::throwError("Error initializing the Console");
 		}
 
-		eagle.outputLogEvent("Drop-down console has been initialized");
+		Debug::outputLogEvent("Drop-down console has been initialized");
 
-		eagle.outputLogEvent("Math system has been initialized");
+		Debug::outputLogEvent("Math system has been initialized");
 
-		eagle.outputLogEvent("EagleScript has been initialized");
+		Debug::outputLogEvent("EagleScript has been initialized");
 
-		eagle.outputLogEvent("");
+		Debug::outputLogEvent("");
 
 		initialized = 1;
 	}
 
 	void EagleEngine::shutdown()
 	{
-		eagle.outputLogEvent("");
-		eagle.outputLogEvent("Shutting down...");
+		Debug::outputLogEvent("");
+		Debug::outputLogEvent("Shutting down...");
 
-		shutdownLoggingSystem();
+		Debug::shutdownLoggingSystem();
 
 		gameOver = 1;
 
@@ -284,24 +234,6 @@ namespace ProjectEagle
 		shutdown();
 	}
 
-	int dikToAscii(DWORD scancode)
-	{
-#ifndef PLATFORM_WP8
-		static HKL layout = GetKeyboardLayout(0);
-		static unsigned char State[256];
-
-		if (GetKeyboardState(State) == 0)
-			return 0;
-
-		UINT vk = MapVirtualKeyEx(scancode, 1, layout);
-		unsigned short ascii;
-		ToAsciiEx(vk, scancode, State, &ascii, 0, layout);
-		return ascii % 256;
-#else
-		return 0;
-#endif
-	}
-
 	bool EagleEngine::toggleFullscreen()
 	{
 		return 1;
@@ -329,72 +261,6 @@ namespace ProjectEagle
 		std::wstring r(buf);
 		delete[] buf;
 		return r;
-	}
-
-	BOOL WINAPI AnsiToUnicode(LPSTR ansiString, LPWSTR unicodeBuffer, DWORD unicodeBufferSize)
-	{
-		int returnValue = 0;
-		returnValue = MultiByteToWideChar(CP_ACP, 0, ansiString, -1, unicodeBuffer, unicodeBufferSize);
-
-		return (returnValue != 0);
-	}
-
-	BOOL WINAPI UnicodeToAnsi(LPWSTR unicodeString, LPSTR  ansiBuffer, DWORD ansiBufferSize)
-	{
-		int returnValue = 0;
-		returnValue = WideCharToMultiByte(CP_ACP, 0, unicodeString, -1, ansiBuffer, ansiBufferSize, NULL, NULL);
-
-		return (returnValue != 0);
-	}
-
-	// Logging system
-
-	void EagleEngine::initializeLoggingSystem()
-	{
-		loggingSystemInitialized = 1;
-	}
-
-	void EagleEngine::shutdownLoggingSystem()
-	{
-		if(!loggingSystemEnabled || !loggingSystemInitialized)
-		{
-			return;
-		}
-
-#ifndef PLATFORM_WP8
-
-		if(!(logFile = fopen("log.txt", "wt")))
-		{
-			return;
-		}
-
-		for(int i = 0; i < logStringList.size(); ++i)
-		{
-			fwrite(logStringList[i].c_str(), strlen(logStringList[i].c_str()), 1, logFile);
-		}
-
-		fclose(logFile);
-#endif
-
-		loggingSystemInitialized = 0;
-	}
-
-	void EagleEngine::outputLogEvent(std::string eventMessage)
-	{
-		if(!loggingSystemEnabled || !loggingSystemInitialized)
-		{
-			return;
-		}
-
-#ifdef PLATFORM_WP8
-		this->message(eventMessage);
-#else
-		//OutputDebugStringA((char *)(eventString + "\n").c_str());
-#endif
-
-		eventMessage += '\n';
-
-		logStringList.push_back(eventMessage);
 	}
 
 	float EagleEngine::getFrameTime()
@@ -480,21 +346,6 @@ namespace ProjectEagle
 	void EagleEngine::resetFrameTimer()
 	{
 		frameTimer.reset();
-	}
-
-	void EagleEngine::disableLoggingSystem()
-	{
-		loggingSystemEnabled = 1;
-	}
-
-	void EagleEngine::enableLoggingSystem()
-	{
-		loggingSystemEnabled = 0;
-	}
-
-	bool EagleEngine::isLoggingSystemEnabled()
-	{
-		return loggingSystemEnabled;
 	}
 
 #ifdef PLATFORM_WP8

@@ -1,4 +1,14 @@
-#include "Eagle.h"
+#include "ParticleSystem.h"
+
+#include "MathSystem.h"
+#include "ResourceManager.h"
+
+#define EAGLE_DEFAULT_FRAME_RATE 60
+#define EAGLE_DEFAULT_FRAME_TIME (1.0 / EAGLE_DEFAULT_FRAME_RATE)
+
+static ProjectEagle::Timer timer;
+
+extern ProjectEagle::ResourceManagerClass resourceManager;
 
 namespace ProjectEagle
 {
@@ -140,7 +150,7 @@ namespace ProjectEagle
 
 	void ParticleSystem::update()
 	{
-		float frameTime = eagle.getFrameTime();
+		float frameTime = EAGLE_DEFAULT_FRAME_TIME; //eagle.getFrameTime();
 
 		m_moveAmount = m_lastPosition - m_position;
 		m_moveNormal = m_moveAmount.normal();
@@ -522,7 +532,7 @@ namespace ProjectEagle
 
 		m_particleList[index].quickFade = 0;
 
-		m_particleList[index].creationTime = eagle.getTimer()->getPassedTimeSeconds();
+		m_particleList[index].creationTime = timer.getPassedTimeSeconds();
 
 		m_particleList[index].accelerationX = m_acceleration.x;
 		m_particleList[index].accelerationY = m_acceleration.y;
@@ -850,9 +860,10 @@ namespace ProjectEagle
 	}
 
 #ifndef PLATFORM_WP8
+
 	void ParallelParticleSystemUpdate::operator() (const tbb::blocked_range<int>& r) const
 	{
-		float currentTime = eagle.getTimer()->getPassedTimeSeconds();
+		float currentTime = timer.getPassedTimeSeconds();
 
 		float frameTime = *m_particleEmitter->m_frameTime;
 		float frictionEffect = 1.0f - (1.0f - m_particleEmitter->m_frictionFactor) * (frameTime);
@@ -930,5 +941,7 @@ namespace ProjectEagle
 			}
 		}
 	}
+
 #endif
+
 }

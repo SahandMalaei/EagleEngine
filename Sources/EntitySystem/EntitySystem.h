@@ -1,7 +1,9 @@
 #ifndef _ENTITYSYSTEM_H
 #define _ENTITYSYSTEM_H 1
 
-#include "../Eagle.h"
+#include <string>
+#include <unordered_map>
+#include <map>
 
 #define EVENT_MESSAGE_NULL -1
 
@@ -213,5 +215,7 @@ namespace ProjectEagle
 		float scriptInterfaceGetEntityComponentVariableFloat(int entityID, std::string componentName, std::string variableName);
 	};
 };
+
+extern ProjectEagle::GameEntitySystem entitySystem;
 
 #endif

@@ -86,7 +86,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	if(!eagle.preinitializeEngine())
 	{
-		eagle.error("Error in game preload");
+		Debug::throwError("Error in game preload");
 		return 0;
 	}
 
@@ -94,12 +94,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	if(!preload())
 	{
-		eagle.error("Error in game preload");
+		Debug::throwError("Error in game preload");
 
 		return 0;
 	}
 
-	eagle.outputLogEvent("Preload function has returned successfully");
+	Debug::outputLogEvent("Preload function has returned successfully");
 
 	char title[255];
 	sprintf(title, "%s", eagle.getAppTitle().c_str());
@@ -150,7 +150,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	windowHandle = CreateWindow(titleBuffer, titleBuffer, dwStyle, 0, 0, windowRectangle.right - windowRectangle.left, windowRectangle.bottom - windowRectangle.top, 0, 0, hInstancee, 0);
 	if(!windowHandle)
 	{
-		eagle.error("Error creating program window");
+		Debug::throwError("Error creating program window");
 
 		return 0;
 	}
@@ -160,11 +160,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ShowWindow(windowHandle, nCmdShoww);
 	UpdateWindow(windowHandle);
 
-	eagle.outputLogEvent("Window creation successful");
+	Debug::outputLogEvent("Window creation successful");
 
 	if(!eagle.initializeEngine(graphics.getScreenWidth(), graphics.getScreenHeight(), graphics.getFullscreen()))
 	{
-		eagle.error("Error initializing the Engine");
+		Debug::throwError("Error initializing the Engine");
 
 		return 0;
 	}
@@ -175,12 +175,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	if(!initialize())
 	{
-		eagle.error("Initialization was not successful");
+		Debug::throwError("Initialization was not successful");
 
 		return 0;
 	}
 
-	eagle.outputLogEvent("Initialize function returned successfully");
+	Debug::outputLogEvent("Initialize function returned successfully");
 
 	ShowCursor(graphics.getCursorVisibility());
 

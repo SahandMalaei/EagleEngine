@@ -1,12 +1,18 @@
 #ifndef _SPRITE_H
 #define _SPRITE_H 1
 
-#include "Eagle.h"
+#include "Helpers.h"
+#include "Graphics.h"
+#include "ResourceManager.h"
+
+#include "GameObject.h"
 
 #define SPRITE_MAX_BLUR_LEVELS 50
 #define SPRITE_MAX_BLUR_OFFSET 20
 
 ProjectEagle::Vector2 rotatePoint(float x, float y, float centerX, float centerY, float angle);
+
+extern ProjectEagle::ResourceManagerClass resourceManager;
 
 namespace ProjectEagle
 {

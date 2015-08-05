@@ -1,4 +1,4 @@
-#include "../../Eagle.h"
+#include "Common.h"
 
 namespace ProjectEagle
 {

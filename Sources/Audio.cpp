@@ -218,7 +218,7 @@ namespace ProjectEagle
 
 			//sample->setPan(pan);
 
-			//eagle.message("Pan : " + FLOAT_TO_STRING(pan));
+			//Debug::throwMessage("Pan : " + FLOAT_TO_STRING(pan));
 
 			sample->setLastPosition(samplePosition);
 		}
@@ -240,7 +240,7 @@ namespace ProjectEagle
 
 		if(r != FMOD_OK)
 		{
-			eagle.error("Error loading sample from file " + fileName + ". Error code : " + INT_TO_STRING(r));
+			Debug::throwError("Error loading sample from file " + fileName + ". Error code : " + INT_TO_STRING(r));
 
 			return -1;
 		}
@@ -269,7 +269,7 @@ namespace ProjectEagle
 
 		if(r != FMOD_OK)
 		{
-			eagle.error("Error loading sample from file " + fileName + ". Error code : " + INT_TO_STRING(r));
+			Debug::throwError("Error loading sample from file " + fileName + ". Error code : " + INT_TO_STRING(r));
 
 			return -1;
 		}
@@ -297,7 +297,7 @@ namespace ProjectEagle
 
 		if(FMOD_System_CreateDSPByType(system, FMOD_DSP_TYPE_OSCILLATOR, &tone->dsp) != FMOD_OK)
 		{
-			eagle.error("Error in tone generation", "Sound Error");
+			Debug::throwError("Error in tone generation", "Sound Error");
 			return 0;
 		}
 
@@ -394,11 +394,11 @@ namespace ProjectEagle
 			FMOD_Channel_SetPaused(sample->channel, 0);
 
 			if(FMOD_Channel_SetPan(sample->channel, sample->getPan()) != FMOD_OK)
-				eagle.error("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
+				Debug::throwError("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
 			if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume()) != FMOD_OK)
-				eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+				Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 			if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency()) != FMOD_OK)
-				eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
+				Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
 		}
 
 		return 1;
@@ -417,11 +417,11 @@ namespace ProjectEagle
 		FMOD_Channel_SetLoopCount(sample->channel, 0);
 		FMOD_Channel_SetPaused(sample->channel, 0);
 		if(FMOD_Channel_SetPan(sample->channel, sample->getPan()) != FMOD_OK)
-			eagle.error("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
+			Debug::throwError("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
 		if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume()) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency()) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
 
 		return 1;
 	}
@@ -504,7 +504,7 @@ namespace ProjectEagle
 		if(sample == 0) return;
 
 		if(FMOD_Channel_SetPan(sample->channel, pan) != FMOD_OK)
-			eagle.error("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, pan)));
+			Debug::throwError("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, pan)));
 		sample->setPan(pan);
 	}
 
@@ -521,7 +521,7 @@ namespace ProjectEagle
 		if(sample == 0) return;
 
 		if(FMOD_Channel_SetVolume(sample->channel, volume) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		sample->setVolume(volume);
 	}
 
@@ -541,7 +541,7 @@ namespace ProjectEagle
 		if(sample == 0) return;
 
 		if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume() + value) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		sample->setVolume(sample->getVolume() + value);
 	}
 
@@ -552,7 +552,7 @@ namespace ProjectEagle
 		if(sample == 0) return;
 
 		if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume() - value) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		sample->setVolume(sample->getVolume() - value);
 	}
 
@@ -563,7 +563,7 @@ namespace ProjectEagle
 		if(sample == 0) return;
 
 		if(FMOD_Channel_SetFrequency(sample->channel, frequency) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, frequency)));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, frequency)));
 		sample->setFrequency(frequency);
 	}
 
@@ -580,7 +580,7 @@ namespace ProjectEagle
 		if(sample == 0) return;
 
 		if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() + value) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() + value)));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() + value)));
 		sample->setFrequency(sample->getFrequency() + value);
 	}
 
@@ -591,7 +591,7 @@ namespace ProjectEagle
 		if(sample == 0) return;
 
 		if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() - value) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() - value)));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() - value)));
 		sample->setFrequency(sample->getFrequency() - value);
 	}
 
@@ -610,11 +610,11 @@ namespace ProjectEagle
 			FMOD_Channel_SetPaused(sample->channel, 0);
 
 			if(FMOD_Channel_SetPan(sample->channel, sample->getPan()) != FMOD_OK)
-				eagle.error("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
+				Debug::throwError("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
 			if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume()) != FMOD_OK)
-				eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+				Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 			if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency()) != FMOD_OK)
-				eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
+				Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
 		}
 		//free((void *)sample);
 		return 1;
@@ -681,7 +681,7 @@ namespace ProjectEagle
 		SoundSample *sample = sampleList[index];
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetPan(sample->channel, pan) != FMOD_OK)
-			eagle.error("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, pan)));
+			Debug::throwError("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, pan)));
 		sample->setPan(pan);
 	}
 
@@ -696,7 +696,7 @@ namespace ProjectEagle
 		SoundSample *sample = sampleList[index];
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetVolume(sample->channel, volume) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		sample->setVolume(volume);
 	}
 
@@ -712,7 +712,7 @@ namespace ProjectEagle
 		SoundSample *sample = sampleList[index];
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume() + value) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		sample->setVolume(sample->getVolume() + value);
 	}
 
@@ -721,7 +721,7 @@ namespace ProjectEagle
 		SoundSample *sample = sampleList[index];
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume() - value) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		sample->setVolume(sample->getVolume() - value);
 	}
 
@@ -730,7 +730,7 @@ namespace ProjectEagle
 		SoundSample *sample = sampleList[index];
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetFrequency(sample->channel, frequency) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, frequency)));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, frequency)));
 		sample->setFrequency(frequency);
 	}
 
@@ -745,7 +745,7 @@ namespace ProjectEagle
 		SoundSample *sample = sampleList[index];
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() + value) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() + value)));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() + value)));
 		sample->setFrequency(sample->getFrequency() + value);
 	}
 
@@ -754,7 +754,7 @@ namespace ProjectEagle
 		SoundSample *sample = sampleList[index];
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() - value) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() - value)));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() - value)));
 		sample->setFrequency(sample->getFrequency() - value);
 	}
 
@@ -828,11 +828,11 @@ namespace ProjectEagle
 			FMOD_Channel_SetPaused(sample->channel, 0);
 
 			if(FMOD_Channel_SetPan(sample->channel, sample->getPan()) != FMOD_OK)
-				eagle.error("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
+				Debug::throwError("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
 			if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume()) != FMOD_OK)
-				eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+				Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 			if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency()) != FMOD_OK)
-				eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
+				Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
 		}
 		//free((void *)sample);
 		return 1;
@@ -852,11 +852,11 @@ namespace ProjectEagle
 		FMOD_Channel_SetLoopCount(sample->channel, -1);
 		FMOD_Channel_SetPaused(sample->channel, 0);
 		if(FMOD_Channel_SetPan(sample->channel, sample->getPan()) != FMOD_OK)
-			eagle.error("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
+			Debug::throwError("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, sample->getPan())));
 		if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume()) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency()) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency())));
 
 		return 1;
 	}
@@ -902,7 +902,7 @@ namespace ProjectEagle
 		MachineTone *sample = findTone(name);
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetPan(sample->channel, pan) != FMOD_OK)
-			eagle.error("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, pan)));
+			Debug::throwError("Sound Error in setPan, error code : " + std::to_string((long float)FMOD_Channel_SetPan(sample->channel, pan)));
 		sample->setPan(pan);
 	}
 
@@ -917,7 +917,7 @@ namespace ProjectEagle
 		MachineTone *sample = findTone(name);
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetVolume(sample->channel, volume) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		sample->setVolume(volume);
 	}
 
@@ -933,7 +933,7 @@ namespace ProjectEagle
 		MachineTone *sample = findTone(name);
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume() + value) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		sample->setVolume(sample->getVolume() + value);
 	}
 
@@ -942,7 +942,7 @@ namespace ProjectEagle
 		MachineTone *sample = findTone(name);
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetVolume(sample->channel, sample->getVolume() - value) != FMOD_OK)
-			eagle.error("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
+			Debug::throwError("Sound Error in setVolume, error code : " + std::to_string((long float)FMOD_Channel_SetVolume(sample->channel, sample->getVolume())));
 		sample->setVolume(sample->getVolume() - value);
 	}
 
@@ -951,7 +951,7 @@ namespace ProjectEagle
 		MachineTone *sample = findTone(name);
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetFrequency(sample->channel, frequency) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, frequency)));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, frequency)));
 		sample->setFrequency(frequency);
 	}
 
@@ -966,7 +966,7 @@ namespace ProjectEagle
 		MachineTone *sample = findTone(name);
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() + value) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() + value)));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() + value)));
 		sample->setFrequency(sample->getFrequency() + value);
 	}
 
@@ -975,7 +975,7 @@ namespace ProjectEagle
 		MachineTone *sample = findTone(name);
 		//if(sample == 0) return;
 		if(FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() - value) != FMOD_OK)
-			eagle.error("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() - value)));
+			Debug::throwError("Sound Error in setFrequency, error code : " + std::to_string((long float)FMOD_Channel_SetFrequency(sample->channel, sample->getFrequency() - value)));
 		sample->setFrequency(sample->getFrequency() - value);
 	}
 
@@ -1185,7 +1185,7 @@ namespace ProjectEagle
 
 		FMOD_Sound_Lock(sample->sample, 0, 44100 * soundLengthMilliseconds / 1000.0, &dat0, &dat1, &length0, &length1);
 
-		//eagle.message(INT_TO_STRING(len0) + ", " + INT_TO_STRING(len1));
+		//Debug::throwMessage(INT_TO_STRING(len0) + ", " + INT_TO_STRING(len1));
 		//FMOD_Sound_ReadData(sound, data, 1024);
 
 		//if(dat0) graphics.drawPoint(100, *(int *)(dat0) / 5000000.0 + 200, colors.White);
@@ -1230,7 +1230,7 @@ namespace ProjectEagle
 		//44100
 		FMOD_Sound_Lock(sample->sample, 0, byteCount, &dat0, &dat1, &len0, &len1);
 
-		//eagle.message(INT_TO_STRING(len0) + ", " + INT_TO_STRING(len1));
+		//Debug::throwMessage(INT_TO_STRING(len0) + ", " + INT_TO_STRING(len1));
 		//FMOD_Sound_ReadData(sound, data, 1024);
 
 		//if(dat0) graphics.drawPoint(100, *(int *)(dat0) / 5000000.0 + 200, colors.White);
@@ -1255,7 +1255,7 @@ namespace ProjectEagle
 		//44100
 		FMOD_Sound_Lock(sample->sample, 0, byteCount, &dat0, &dat1, &len0, &len1);
 
-		//eagle.message(INT_TO_STRING(len0) + ", " + INT_TO_STRING(len1));
+		//Debug::throwMessage(INT_TO_STRING(len0) + ", " + INT_TO_STRING(len1));
 		//FMOD_Sound_ReadData(sound, data, 1024);
 
 		//if(dat0) graphics.drawPoint(100, *(int *)(dat0) / 5000000.0 + 200, colors.White);

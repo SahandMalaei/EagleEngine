@@ -1,7 +1,13 @@
 #ifndef _RENDERINGSYSTEM_H
 #define _RENDERINGSYSTEM_H 1
 
-#include "../../Eagle.h"
+#include "../../Graphics.h"
+#include "../../ParticleSystem.h"
+
+#include "../EntitySystem.h"
+
+#include "../../Helpers.h"
+#include "../../Timer.h"
 
 #define RENDER_COMPONENT_TYPE_ID 20
 #define TRANSFORMATION_COMPONENT_TYPE_ID 21
@@ -46,7 +52,7 @@ namespace ProjectEagle
 		Vector2 sourcePosition;
 		Vector2 sourceDimensions;
 
-		void loadTexture(string addressOnDisk);
+		void loadTexture(std::string addressOnDisk);
 	};
 
 	class SpriteSheetAnimationComponent : public GameComponent
@@ -123,7 +129,7 @@ namespace ProjectEagle
 
 		Texture *texture;
 
-		void loadTexture(string addressOnDisk);
+		void loadTexture(std::string addressOnDisk);
 	};
 
 #ifndef PLATFORM_WP8

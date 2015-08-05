@@ -1,4 +1,10 @@
-#include "Eagle.h"
+#include "Sprite.h"
+
+#include "MathSystem.h"
+
+using namespace ProjectEagle;
+
+static ProjectEagle::Timer timer;
 
 Vector2 rotatePoint(float x, float y, float centerX, float centerY, float angle)
 {
@@ -36,7 +42,7 @@ namespace ProjectEagle
 		m_frameCount = 1;
 		m_animationDirection = 1;
 		m_animationColumnCount = 1;
-		m_frameStart = eagle.getTimer()->getPassedTimeMilliseconds();
+		m_frameStart = timer.getPassedTimeMilliseconds();
 		m_frameInterval = 0;
 		m_animationStartX = 0;
 		m_animationStartY = 0;
@@ -308,7 +314,7 @@ namespace ProjectEagle
 	{
 		if(m_frameInterval > 0)
 		{
-			DWORD currentTime = eagle.getTimer()->getPassedTimeMilliseconds();
+			DWORD currentTime = timer.getPassedTimeMilliseconds();
 
 			if(currentTime > m_frameStart + m_frameInterval)
 			{

@@ -1,7 +1,24 @@
 #ifndef _GRAPHICS_H
 #define _GRAPHICS_H 1
 
-#include "Eagle.h"
+#include <WinSock2.h>
+#include <Windows.h>
+
+#ifndef PLATFORM_WP8
+	#include <d3d11.h>
+#else
+	#include <d3d11_1.h>
+#endif
+
+#include <DirectXMath.h>
+
+#ifndef PLATFORM_WP8
+	#include <d3dcompiler.h>
+#endif
+
+#include "Helpers.h"
+#include "Resource.h"
+#include "Camera.h"
 
 #define COLOR_RGBA(r, g, b, a) ColorValue(r, g, b, a)
 #define COLOR_RGB(r, g, b) ColorValue(r, g, b)
@@ -11,12 +28,18 @@
 #define COLOR_GET_R(color) (int)((((DWORD)color) & 0xff0000) / 0x010000)
 #define COLOR_GET_A(color) (int)((((DWORD)color) & 0xff000000) / 0x01000000)
 
+#define VERTEX_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+#define TRANSFORMED_VERTEX_FORMAT (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+#define PARTICLE_VERTEX_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE)
+#define TRANSFORMED_PARTICLE_VERTEX_FORMAT (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
+
 namespace ProjectEagle
 {
+	class MathSystem;
+
 	enum GraphicsAPIType
 	{
-		//GraphicsAPI_Direct3D9 = 0,
-		GraphicsAPI_Direct3D11 = 1
+		GraphicsAPI_Direct3D11 = 0
 	};
 
 	enum PrimitiveType
@@ -31,6 +54,8 @@ namespace ProjectEagle
 		DirectX::XMMATRIX world;
 		DirectX::XMMATRIX view;
 		DirectX::XMMATRIX projection;
+
+		float currentTime;
 	};
 
 	struct DrawCallData;
@@ -41,11 +66,126 @@ namespace ProjectEagle
 		BlendMode_Additive = 1
 	};
 
+	// Color
+
+	struct ColorValue
+	{
+		float r, g, b, a;
+
+		ColorValue();
+		ColorValue(float r, float g, float b, float a);
+		ColorValue(float r, float g, float b);
+		ColorValue(DWORD color);
+
+		void set(float r, float g, float b, float a);
+		void set(float r, float g, float b);
+
+		//DWORD getDWORD();
+
+		ColorValue& operator = (const DWORD &c);
+	};
+
+	// Vertex
+
+	struct Vertex
+	{
+		float x, y, z;
+		ColorValue color;
+		float tu, tv;
+	};
+
+	struct ParticleVertex
+	{
+		float x, y, z;
+		ColorValue color;
+	};
+
+	// Shader
+
+	enum ShaderType
+	{
+		ShaderType_VertexShader = 0,
+		ShaderType_PixelShader = 1
+	};
+
+	class Shader
+	{
+		friend class GraphicsSystem;
+
+	private:
+		union
+		{
+			ID3D11VertexShader *vertexShader;
+			ID3D11PixelShader *pixelShader;
+		};
+
+		ID3D11InputLayout *inputLayout;
+
+		ID3D10Blob *shaderData;
+		void *dataBuffer;
+		int dataSize;
+
+		ID3D11Buffer *constantBuffer;
+
+		ShaderType type;
+
+		bool isInitialized;
+
+		void createInputLayouts();
+
+	public:
+		Shader();
+		~Shader();
+
+		void compileVertexShaderFromFile(std::string fileAddress);
+		void compilePixelShaderFromFile(std::string fileAddress);
+
+		void loadVertexShaderFromFile(std::string fileAddress);
+		void loadPixelShaderFromFile(std::string fileAddress);
+	};
+
+	// Texture
+
+	class Texture : public Resource
+	{
+		friend class ResourceManagerClass;
+		friend class GraphicsSystem;
+
+	private:
+		ID3D11Texture2D *m_d3dTexture11;
+
+		ID3D11ShaderResourceView* m_shaderResourceView;
+		ID3D11SamplerState* m_samplerState;
+
+		short m_width, m_height;
+
+	public:
+		Texture();
+		~Texture();
+
+		int getWidth();
+		int getHeight();
+		Vector2 getDimensions();
+
+		virtual void releaseData();
+
+		void lock();
+		void unlock();
+
+		DWORD getPixelColor(int x, int y);
+	};
+
+	// Graphics system
+
 	class GraphicsSystem
 	{
+
 #ifdef PLATFORM_WP8
+
 		friend ref class ApplicationWP8;
+
 #endif
+
 		friend class EagleEngine;
 		friend class ResourceManagerClass;
 
@@ -53,6 +193,7 @@ namespace ProjectEagle
 		GraphicsAPIType m_graphicsAPIType;
 
 #ifndef PLATFORM_WP8
+
 		IDXGIAdapter *m_adapter; 
 		IDXGIFactory1 *m_dxgiFactory; 
 		ID3D11Device *m_d3dDevice11;
@@ -63,7 +204,9 @@ namespace ProjectEagle
 
 		ID3D11Texture2D *m_backBufferTexture;
 		ID3D11Texture2D *m_depthStencilTexture;
+
 #else
+
 		Microsoft::WRL::ComPtr<ID3D11Device1> m_d3dDevice11;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_d3dDevice11Context;
 		Microsoft::WRL::ComPtr<IDXGISwapChain1> m_swapChain;
@@ -72,6 +215,7 @@ namespace ProjectEagle
 
 		ComPtr<ID3D11Texture2D> m_backBufferTexture;
 		ComPtr<ID3D11Texture2D> m_depthStencilTexture;
+
 #endif
 
 		ID3D11Buffer *m_vertexBuffer;
@@ -84,6 +228,7 @@ namespace ProjectEagle
 		ID3D11RasterizerState *m_rasterizerState2D;
 
 #ifdef PLATFORM_WP8
+
 		Windows::Foundation::Size m_renderTargetSize;
 		Windows::Foundation::Rect m_windowBounds;
 
@@ -91,11 +236,16 @@ namespace ProjectEagle
 
 		void createWindowSizeDependentResources();
 		void releaseResourcesForSuspending();
+
 #else
+
 		HWND m_windowHandle;
 
 		bool m_windowResizable;
+
 #endif
+
+		bool m_debugMode;
 
 		bool m_fullscreen;
 		bool m_swapChainFullscreen;
@@ -142,9 +292,11 @@ namespace ProjectEagle
 		DirectX::XMMATRIX m_projectionMatrix;
 
 #ifdef PLATFORM_WP8
+
 		float GraphicsSystem::convertDipsToPixels(float dips);
 
 		Windows::UI::Color m_accentColor;
+
 #endif
 
 		int m_drawCallBufferSize;
@@ -169,20 +321,32 @@ namespace ProjectEagle
 		GraphicsSystem();
 		~GraphicsSystem();
 
-		void setGraphicsAPI(GraphicsAPIType type);
 		GraphicsAPIType getGraphicsAPIType();
+		void setGraphicsAPI(GraphicsAPIType type);
+
+		bool isDebugModeEnabled();
+		void setDebugMode(bool state);
 
 #ifndef PLATFORM_WP8
+
 		HWND getWidnowHandle();
+
 #else
+
 		Windows::UI::Core::CoreWindow ^getWindowHandle();
+
 #endif
 
 #ifndef PLATFORM_WP8
+
 		ID3D11Device *getD3DDevice11();
+
 #else
+
 		ID3D11Device1 *getD3DDevice11();
+
 #endif
+
 		ID3D11DeviceContext *getD3DDevice11Context();
 
 		int getScreenWidth();
@@ -363,9 +527,14 @@ namespace ProjectEagle
 		void renderCube(Vector3 topLeftBack, Vector3 bottomRightFront, ColorValue color);
 
 #ifdef PLATFORM_WP8
+
 		ColorValue getAccentColor();
+
 #endif
+
 	};
 };
+
+extern ProjectEagle::GraphicsSystem graphics;
 
 #endif

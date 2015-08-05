@@ -1,7 +1,11 @@
-#include "Eagle.h"
+#include "Font.h"
+
+#include <fstream>
 
 const float EAGLE_FONT_CHARACTER_SPACING = 1.0 / 17.0;
 const float EAGLE_FONT_LINE_SPACING = 1.0 / 17.0;
+
+extern ProjectEagle::ResourceManagerClass resourceManager;
 
 namespace ProjectEagle
 {

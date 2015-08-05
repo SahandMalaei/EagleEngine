@@ -213,7 +213,7 @@ namespace EagleScriptCompiler
 		sourceLineNode->type = ES_ICODE_NODE_TYPE_SOURCE_LINE;
 		sourceLineNode->sourceLineString = sourceLineString;
 
-		//eagle.message("Function index : " + INT_TO_STRING(functionIndex) + ", Source line string : " + (string)sourceLineString);
+		//Debug::throwMessage("Function index : " + INT_TO_STRING(functionIndex) + ", Source line string : " + (string)sourceLineString);
 
 		function->iCodeStream.addNode(sourceLineNode);
 	}

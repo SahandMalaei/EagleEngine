@@ -64,4 +64,6 @@ namespace ProjectEagle
 	};
 };
 
+extern ProjectEagle::MathSystem math;
+
 #endif

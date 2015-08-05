@@ -1623,7 +1623,7 @@ namespace EagleVirtualMachine
 				functionIndexValue.offsetIndex = frameIndex;
 				setStackValue(m_stack.topIndex - 1, &functionIndexValue);
 
-				//eagle.message("Call : " + destinationFunction.name + ", " + INT_TO_STRING(destinationFunction.entryPoint));
+				//Debug::throwMessage("Call : " + destinationFunction.name + ", " + INT_TO_STRING(destinationFunction.entryPoint));
 
 				m_functionDepth++;
 
@@ -1654,7 +1654,7 @@ namespace EagleVirtualMachine
 
 				m_instructionStream.currentInstruction = returnAddress->instructionIndex;
 
-				//eagle.message("Return to : " + INT_TO_STRING(returnAddress->instructionIndex));
+				//Debug::throwMessage("Return to : " + INT_TO_STRING(returnAddress->instructionIndex));
 
 				m_functionDepth--;
 
@@ -1781,7 +1781,7 @@ namespace EagleVirtualMachine
 
 	EagleScriptVirtualMachine::EagleScriptVirtualMachine()
 	{
-		//eagle.message("Creating threads");
+		//Debug::throwMessage("Creating threads");
 
 		/*for(int i = 0; i < ES_THREAD_COUNT; ++i)
 		{

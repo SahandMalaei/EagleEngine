@@ -1,7 +1,7 @@
 #ifndef _COMMON_H
 #define _COMMON_H 1
 
-#include "../../Eagle.h"
+#include "../EntitySystem.h"
 
 #define WIDTHHEIGHT_COMPONENT_TYPE_ID 00
 #define LIFESPAN_COMPONENT_TYPE_ID 01

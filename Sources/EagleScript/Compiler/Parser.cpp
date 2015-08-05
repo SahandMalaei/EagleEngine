@@ -1113,7 +1113,7 @@ namespace EagleScriptCompiler
 					}
 				}
 
-				//eagle.message("Assignment complete");
+				//Debug::throwMessage("Assignment complete");
 
 				currentScope = ES_SCOPE_GLOBAL;
 			}
@@ -1304,7 +1304,7 @@ namespace EagleScriptCompiler
 
 					currentScope = preloadFunctionIndex;
 
-					//eagle.message(INT_TO_STRING(preloadFunctionIndex));
+					//Debug::throwMessage(INT_TO_STRING(preloadFunctionIndex));
 
 					if(symbol->size == 1)
 					{

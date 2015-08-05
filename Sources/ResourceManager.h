@@ -1,7 +1,12 @@
 #ifndef _RESOURCEMANAGER_H
 #define _RESOURCEMANAGER_H 1
 
-#include "Eagle.h"
+#include <vector>
+#include <string>
+#include <thread>
+
+#include "Resource.h"
+#include "Graphics.h"
 
 enum ResourceEventType
 {
@@ -47,5 +52,7 @@ namespace ProjectEagle
 		ID3D11Device *getD3DDevice();
 	};
 };
+
+extern ProjectEagle::ResourceManagerClass resourceManager;
 
 #endif

@@ -1,4 +1,34 @@
-#include "Eagle.h"
+#include "InputSystem.h"
+
+#include <WinSock2.h>
+#include <Windows.h>
+
+#ifndef PLATFORM_WP8
+	#include <Include/DirectX/dinput.h>
+	#include <Include/DirectX/dinputd.h>
+#endif
+
+#include "Graphics.h"
+
+static IDirectInput8 *m_directInput;
+static IDirectInputDevice8 *m_keyboard;
+static IDirectInputDevice8 *m_joystick;
+static IDirectInputDevice8 *m_mouse;
+
+static DIMOUSESTATE m_mouseState;
+static DIJOYSTATE2 m_joystickState;
+
+static ProjectEagle::Timer timer;
+
+#ifndef PLATFORM_WP8
+
+struct DI_ENUM_CONTEXT
+{
+	DIJOYCONFIG* pPreferredJoyConfig;
+	bool bPreferredJoyConfigValid;
+};
+
+#endif
 
 namespace ProjectEagle
 {
@@ -9,7 +39,9 @@ namespace ProjectEagle
 
 	void InputSystem::initialize()
 	{
+
 #ifndef PLATFORM_WP8
+
 		m_windowHandle = graphics.getWidnowHandle();
 
 		DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_directInput, NULL);
@@ -141,6 +173,7 @@ namespace ProjectEagle
 		m_joystickValidity = 1;
 
 #else
+
 		for(int i = 0; i < INPUT_SUPPORTED_TOUCH_COUNT; ++i)
 		{
 			m_touchList[i] = 0;
@@ -160,6 +193,7 @@ namespace ProjectEagle
 		m_backButtonPressed = 0;
 
 #endif
+
 	}
 
 	InputSystem::~InputSystem()
@@ -172,7 +206,9 @@ namespace ProjectEagle
 
 	void InputSystem::update()
 	{
+
 #ifndef PLATFORM_WP8
+
 		m_keyboard->Poll();
 
 		if(!SUCCEEDED(m_keyboard->GetDeviceState(256, (LPVOID)&m_keyState)))
@@ -209,7 +245,7 @@ namespace ProjectEagle
 			m_joystickAxis.y = (m_joystickState.lY - 32767) / 32767;
 		}
 
-		float currentTime = eagle.getTimer()->getPassedTimeSeconds();
+		float currentTime = timer.getPassedTimeSeconds();
 
 		for(int i = 0; i < 256; ++i)
 		{
@@ -276,7 +312,7 @@ namespace ProjectEagle
 
 #else
 	
-		int currentTime = eagle.getTimer()->getPassedTimeSeconds();
+		int currentTime = timer.getPassedTimeSeconds();
 
 		for(int i = 0; i < INPUT_SUPPORTED_TOUCH_COUNT; ++i)
 		{
@@ -312,7 +348,9 @@ namespace ProjectEagle
 
 			m_tapTimer.reset();
 		}
+
 #endif
+
 	}
 
 	bool InputSystem::isKeyDown(KeyboardKey key)
@@ -426,7 +464,7 @@ namespace ProjectEagle
 	void InputSystem::resetMouseButtonHoldDuration(MouseButton button)
 	{
 		m_buttonHoldDuration[button] = 0;
-		m_buttonHoldStart[button] = eagle.getTimer()->getPassedTimeSeconds();
+		m_buttonHoldStart[button] = timer.getPassedTimeSeconds();
 	}
 
 	int InputSystem::getMouseButtonTapFrequency(MouseButton button)
@@ -587,7 +625,7 @@ namespace ProjectEagle
 		}
 
 		m_touchHoldDuration[touchID] = 0;
-		m_touchHoldStart[touchID] = eagle.getTimer()->getPassedTimeSeconds();
+		m_touchHoldStart[touchID] = timer.getPassedTimeSeconds();
 	}
 
 	int InputSystem::getMouseButtonTapFrequency(int touchID)
@@ -675,7 +713,9 @@ namespace ProjectEagle
 
 	void InputSystem::resetOldKeys()
 	{
+
 #ifndef PLATFORM_WP8
+
 		for(int i = 0; i < 256; ++i)
 		{
 			m_oldKeys[i] = getKeyState((KeyboardKey)i);
@@ -690,12 +730,16 @@ namespace ProjectEagle
 		{
 			m_oldButtons[i] = getMouseButtonState((MouseButton)i);
 		}
+
 #else
+
 		for(int i = 0; i < INPUT_SUPPORTED_TOUCH_COUNT; ++i)
 		{
 			m_oldTouchList[i] = m_touchList[i];
 		}
+
 #endif
+
 	}
 
 	float InputSystem::getKeyHoldDuration(KeyboardKey key)
@@ -706,7 +750,7 @@ namespace ProjectEagle
 	void InputSystem::resetKeyHoldDuration(KeyboardKey key)
 	{
 		m_keyHoldDuration[key] = 0;
-		m_keyHoldStart[key] = eagle.getTimer()->getPassedTimeSeconds();
+		m_keyHoldStart[key] = timer.getPassedTimeSeconds();
 	}
 
 	int InputSystem::getKeyTapFrequency(KeyboardKey key)
@@ -727,6 +771,30 @@ namespace ProjectEagle
 		}
 
 		m_keySequence[0] = k;
+	}
+
+	int dikToAscii(DWORD scancode)
+	{
+
+#ifndef PLATFORM_WP8
+
+		static HKL layout = GetKeyboardLayout(0);
+		static unsigned char State[256];
+
+		if (GetKeyboardState(State) == 0)
+			return 0;
+
+		UINT vk = MapVirtualKeyEx(scancode, 1, layout);
+		unsigned short ascii;
+		ToAsciiEx(vk, scancode, State, &ascii, 0, layout);
+		return ascii % 256;
+
+#else
+
+		return 0;
+
+#endif
+
 	}
 
 	bool InputSystem::checkForKeySequence(std::string sequence)
@@ -792,9 +860,7 @@ namespace ProjectEagle
 				}
 			}
 
-			eagle.sleep(10);
-
-			eagle.updateEngine();
+			sleep(0.01);
 		}
 	}
 
@@ -805,11 +871,17 @@ namespace ProjectEagle
 
 	bool InputSystem::getJoystickButtonState(int b)
 	{
+
 #ifndef PLATFORM_WP8
+
 		return (m_joystickState.rgbButtons[b] & 0x80);
+
 #else
+
 		return 0;
+
 #endif
+
 	}
 
 	long InputSystem::getMouseWheelMove()

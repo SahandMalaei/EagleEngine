@@ -43,35 +43,6 @@ namespace ProjectEagle
 
 		bool isLoaded();
 	};
-
-	class Texture : public Resource
-	{
-		friend class ResourceManagerClass;
-		friend class GraphicsSystem;
-
-	private:
-		ID3D11Texture2D *m_d3dTexture11;
-
-		ID3D11ShaderResourceView* m_shaderResourceView;
-		ID3D11SamplerState* m_samplerState;
-
-		short m_width, m_height;
-
-	public:
-		Texture();
-		~Texture();
-
-		int getWidth();
-		int getHeight();
-		Vector2 getDimensions();
-
-		virtual void releaseData();
-
-		void lock();
-		void unlock();
-
-		DWORD getPixelColor(int x, int y);
-	};
 };
 
 #endif

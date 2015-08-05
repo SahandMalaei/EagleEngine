@@ -1,7 +1,22 @@
-#include "Eagle.h"
+#include "ResourceManager.h"
+
+#include <thread>
+#include <mutex>
+
+#include <WinSock2.h>
+#include <Windows.h>
+
 #include <Include/DirectX/TK/DDSTextureLoader.h>
 
+#ifndef PLATFORM_WP8
+	#include <Include/DirectX/D3DX11.h>
+#endif
+
+#include "Debug.h"
+
 static ID3D11Device *d3dDevice11;
+
+using namespace std;
 
 namespace ProjectEagle
 {
@@ -18,7 +33,7 @@ namespace ProjectEagle
 
 		/*if(!file)
 		{
-			eagle.error("Failed to open \"" + fileAddress + "\"");
+			Debug::throwError("Failed to open \"" + fileAddress + "\"");
 		}*/
 
 		fseek(file, 0, SEEK_END);
@@ -164,7 +179,7 @@ namespace ProjectEagle
 				HRESULT result;
 
 				//FileLoadInformation fileInformation = loadFile(fileAddress);
-				//eagle.message(INT_TO_STRING(fileInformation.size));
+				//Debug::throwMessage(INT_TO_STRING(fileInformation.size));
 
 #ifndef PLATFORM_WP8
 				D3DX11_IMAGE_LOAD_INFO loadInfo;
@@ -176,7 +191,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Error loading \"" + (std::string)fileAddress + "\" Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Error loading \"" + (std::string)fileAddress + "\" Error code : " + INT_TO_STRING(result));
 
 					return 0;
 				}
@@ -185,7 +200,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Error loading \"" + (std::string)fileAddress + "\" Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Error loading \"" + (std::string)fileAddress + "\" Error code : " + INT_TO_STRING(result));
 
 					return 0;
 				}
@@ -196,7 +211,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Error loading \"" + (std::string)fileAddress + "\" Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Error loading \"" + (std::string)fileAddress + "\" Error code : " + INT_TO_STRING(result));
 
 					return 0;
 				}
@@ -219,8 +234,8 @@ namespace ProjectEagle
 
 				returnTexture->m_loaded = 1;
 
-				eagle.outputLogEvent("Texture \"" + ((std::string)fileAddress) + "\" successfully loaded");
-				eagle.outputLogEvent("");
+				Debug::outputLogEvent("Texture \"" + ((std::string)fileAddress) + "\" successfully loaded");
+				Debug::outputLogEvent("");
 
 				//console.print("Texture \"" + (std::string)address + "\" loaded", ConsoleOutput_Success);
 
@@ -326,7 +341,7 @@ namespace ProjectEagle
 
 						if(FAILED(result))
 						{
-							eagle.error("Error loading \"" + (std::string)fileAddress + "\" Error code : " + INT_TO_STRING(result));
+							Debug::throwError("Error loading \"" + (std::string)fileAddress + "\" Error code : " + INT_TO_STRING(result));
 
 							//delete(fileInformation.data);
 
@@ -339,7 +354,7 @@ namespace ProjectEagle
 
 						/*if(FAILED(result))
 						{
-							eagle.error("Error loading \"" + (std::string)address + "\" Error code : " + INT_TO_STRING(result));
+							Debug::throwError("Error loading \"" + (std::string)address + "\" Error code : " + INT_TO_STRING(result));
 
 							return 0;
 						}*/
@@ -417,10 +432,10 @@ namespace ProjectEagle
 							{
 								result = d3dDevice11->GetDeviceRemovedReason();
 
-								eagle.outputLogEvent(INT_TO_STRING(result));
+								Debug::outputLogEvent(INT_TO_STRING(result));
 							}
 
-							eagle.error("Error loading \"" + (std::string)eventProperties.fileAddress + "\" Error code : " + INT_TO_STRING(result));
+							Debug::throwError("Error loading \"" + (std::string)eventProperties.fileAddress + "\" Error code : " + INT_TO_STRING(result));
 
 							return;
 						}

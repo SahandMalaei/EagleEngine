@@ -1,9 +1,19 @@
 #ifndef _DYNAMICSSYSTEM_H
 #define _DYNAMICSSYSTEM_H 1
 
-#include "../../Eagle.h"
+#ifndef PLATFORM_WP8
+	#include <WinSock2.h>
+	#include <Windows.h>
+
+	#include <Include/tbb/tbb.h>
+#endif
 
 #include <Include/Box2D/Box2D.h>
+
+#include "../EntitySystem.h"
+
+#include "../../Helpers.h"
+#include "../../Timer.h"
 
 #define POSITION_COMPONENT_TYPE_ID 10
 #define MOVEMENT_COMPONENT_TYPE_ID 11

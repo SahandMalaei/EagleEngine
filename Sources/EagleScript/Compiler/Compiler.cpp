@@ -84,8 +84,8 @@ namespace EagleScriptCompiler
 			EagleAssembler::cleanup();
 		}
 
-		eagle.outputLogEvent((char *)("Script \"" + (string)inputFileAddress + "\" successfully loaded").c_str());
-		eagle.outputLogEvent("");
+		Debug::outputLogEvent((char *)("Script \"" + (string)inputFileAddress + "\" successfully loaded").c_str());
+		Debug::outputLogEvent("");
 
 		return 1;
 	}
@@ -142,7 +142,7 @@ namespace EagleScriptCompiler
 
 			if(_stricmp(includeData->fileAddress, getCurrentLexeme()) == 0)
 			{
-				eagle.outputLogEvent((char *)("Warning : Duplicate file inclusion : \"" + (string)getCurrentLexeme() + "\"; include skipped").c_str());
+				Debug::outputLogEvent((char *)("Warning : Duplicate file inclusion : \"" + (string)getCurrentLexeme() + "\"; include skipped").c_str());
 
 				return 1;
 			}

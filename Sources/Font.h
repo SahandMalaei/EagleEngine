@@ -1,7 +1,9 @@
 #ifndef _FONT_H
 #define _FONT_H 1
 
-#include "Eagle.h"
+#include "Helpers.h"
+#include "Graphics.h"
+#include "ResourceManager.h"
 
 namespace ProjectEagle
 {

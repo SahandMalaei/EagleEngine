@@ -1,7 +1,9 @@
 #ifndef _CAMERA_H
 #define _CAMERA_H 1
 
-#include "Eagle.h"
+#include <DirectXMath.h>
+
+#include "Helpers.h"
 
 namespace ProjectEagle
 {
@@ -21,6 +23,8 @@ namespace ProjectEagle
 
 		Vector3 m_position;
 		Vector3 m_target;
+
+		Vector2 m_viewportDimensions;
 
 		DirectX::XMVECTOR m_upXM;
 		DirectX::XMVECTOR m_rightXM;
@@ -53,6 +57,9 @@ namespace ProjectEagle
 		void setAspectRatio(float value);
 		float getFOV();
 		void setFOV(float value);
+
+		Vector2 getViewportDimensions();
+		void setViewportDimensions(Vector2 dimensions);
 
 		void update();
 

@@ -221,7 +221,7 @@ namespace ProjectEagle
 			m_highestIndex++;
 			//m_gameObjectList[highestIndex] = new GameObject(*object);
 			//Sprite *spriteObject;
-			//eagle.message(INT_TO_STRING(object->getType()));
+			//Debug::throwMessage(INT_TO_STRING(object->getType()));
 			switch(object->getType())
 			{
 			case GAMEOBJECT_DEFAULT:
@@ -295,7 +295,7 @@ namespace ProjectEagle
 			m_gameObjectList[i]->render();
 			//Sprite *aa = (Sprite *)m_gameObjectList[i];
 			//aa->draw();
-			//eagle.message("!");
+			//Debug::throwMessage("!");
 		}
 	}
 

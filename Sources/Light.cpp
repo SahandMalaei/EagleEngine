@@ -1,4 +1,6 @@
-#include "Eagle.h"
+#include "Light.h"
+
+#include "MathSystem.h"
 
 namespace ProjectEagle
 {

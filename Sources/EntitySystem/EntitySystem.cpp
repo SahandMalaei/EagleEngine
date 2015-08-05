@@ -1,4 +1,8 @@
-#include "../Eagle.h"
+#include "EntitySystem.h"
+
+#include "GameSystems/Common.h"
+#include "GameSystems/DynamicsSystem.h"
+#include "GameSystems/RenderingSystem.h"
 
 namespace ProjectEagle
 {

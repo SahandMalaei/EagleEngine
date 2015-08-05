@@ -1,4 +1,32 @@
-#include "Eagle.h"
+#include "Graphics.h"
+
+#include <algorithm>
+#include <string>
+
+#include "Debug.h"
+#include "MathSystem.h"
+#include "Timer.h"
+#include "Resource.h"
+
+#ifndef PLATFORM_WP8
+	#include <Include/DirectX/D3DX11.h>
+#endif
+
+#define ARRAY_SIZE(a) \
+	((sizeof(a) / sizeof(*(a))) / \
+	static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
+
+#ifndef PLATFORM_WP8
+	const int EAGLE_DEFAULT_FRAME_RATE = 60;
+#else
+	const int EAGLE_DEFAULT_FRAME_RATE = 60;
+#endif
+
+#define EAGLE_DEFAULT_FRAME_TIME (1.0 / EAGLE_DEFAULT_FRAME_RATE)
+
+ProjectEagle::Timer timer;
+
+using namespace std;
 
 namespace ProjectEagle
 {
@@ -38,6 +66,7 @@ namespace ProjectEagle
 	GraphicsSystem::GraphicsSystem()
 	{
 		m_graphicsAPIType = GraphicsAPI_Direct3D11;
+		m_debugMode = 0;
 
 #ifndef PLATFORM_WP8
 
@@ -118,6 +147,16 @@ namespace ProjectEagle
 		}
 	}
 
+	bool GraphicsSystem::isDebugModeEnabled()
+	{
+		return m_debugMode;
+	}
+
+	void GraphicsSystem::setDebugMode(bool state)
+	{
+		m_debugMode = state;
+	}
+
 #ifndef PLATFORM_WP8
 
 	HWND GraphicsSystem::getWidnowHandle()
@@ -179,9 +218,9 @@ namespace ProjectEagle
 
 #ifndef PLATFORM_WP8
 
-				if(FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory1) ,(void**)&m_dxgiFactory)))
+				if(FAILED(CreateDXGIFactory(__uuidof(IDXGIFactory) ,(void**)&m_dxgiFactory)))
 				{
-					eagle.error("Failed to create the DXGIFactory");
+					Debug::throwError("Failed to create the DXGIFactory");
 				}
 
 				m_dxgiFactory->EnumAdapters(0, &m_adapter);
@@ -231,6 +270,8 @@ namespace ProjectEagle
 
 #ifndef PLATFORM_WP8
 
+		const DXGI_FORMAT BACK_BUFFER_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM;
+
 		if(m_multiSamplingEnabled)
 		{
 			for(int i = 1; i < 3; ++i)
@@ -238,7 +279,7 @@ namespace ProjectEagle
 				int sampleCount = math.power(2, i);
 				unsigned int quality;
 
-				m_d3dDevice11->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, sampleCount, &quality);
+				m_d3dDevice11->CheckMultisampleQualityLevels(BACK_BUFFER_FORMAT, sampleCount, &quality);
 
 				if(quality == 0)
 				{
@@ -257,7 +298,7 @@ namespace ProjectEagle
 		swapChainDesc.BufferCount = 1;
 		swapChainDesc.BufferDesc.Width = m_screenWidth;
 		swapChainDesc.BufferDesc.Height = m_screenHeight;
-		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		swapChainDesc.BufferDesc.Format = BACK_BUFFER_FORMAT;
 		swapChainDesc.BufferDesc.RefreshRate.Numerator = EAGLE_DEFAULT_FRAME_RATE;
 		swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 		swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -278,7 +319,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to create the Direct3D 11 swap chain. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to create the Direct3D 11 swap chain. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
@@ -289,7 +330,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to get the swap chain back buffer. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to get the swap chain back buffer. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
@@ -311,7 +352,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to create the render target view. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to create the render target view. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
@@ -334,7 +375,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to create the depth-stencil texture. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to create the depth-stencil texture. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
@@ -365,7 +406,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to create the Depth-Stencil state. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to create the Depth-Stencil state. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
@@ -390,7 +431,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to create the depth-stencil view. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to create the depth-stencil view. Error code : " + INT_TO_STRING(result));
 
 			return 0;
 		}
@@ -428,7 +469,7 @@ namespace ProjectEagle
 
 #ifndef PLATFORM_WP8
 
-				int creationFlags = 0; // D3D11_CREATE_DEVICE_DEBUG;
+				int creationFlags = D3D11_CREATE_DEVICE_DEBUG * int(m_debugMode);
 
 				for(int i = 0; i < d3d11DriverTypeCount; ++i)
 				{
@@ -447,7 +488,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Failed to create the Direct3D 11 device. Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Failed to create the Direct3D 11 device. Error code : " + INT_TO_STRING(result));
 
 					return;
 				}
@@ -465,7 +506,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Failed to create the Direct3D11 device. Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Failed to create the Direct3D11 device. Error code : " + INT_TO_STRING(result));
 
 					return;
 				}
@@ -491,16 +532,16 @@ namespace ProjectEagle
 				m_swapChainFullscreen = m_fullscreen;
 
 				DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {0};
-				swapChainDesc.Width = static_cast<UINT>(m_renderTargetSize.Width); // Match the size of the window.
+				swapChainDesc.Width = static_cast<UINT>(m_renderTargetSize.Width);
 				swapChainDesc.Height = static_cast<UINT>(m_renderTargetSize.Height);
-				swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM; // This is the most common swap chain format.
+				swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 				swapChainDesc.Stereo = 0;
-				swapChainDesc.SampleDesc.Count = 1; // Don't use multi-sampling.
+				swapChainDesc.SampleDesc.Count = 1;
 				swapChainDesc.SampleDesc.Quality = 0;
 				swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-				swapChainDesc.BufferCount = 1; // On phone, only single buffering is supported.
-				swapChainDesc.Scaling = DXGI_SCALING_STRETCH; // On phone, only stretch and aspect-ratio stretch scaling are allowed.
-				swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; // On phone, no swap effects are supported.
+				swapChainDesc.BufferCount = 1;
+				swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
+				swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 				swapChainDesc.Flags = 0;
 
 				ComPtr<IDXGIDevice1> dxgiDevice;
@@ -518,7 +559,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Failed to create the swap chain. Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Failed to create the swap chain. Error code : " + INT_TO_STRING(result));
 
 					return;
 				}
@@ -539,7 +580,7 @@ namespace ProjectEagle
 
 				if(!createWindowSizeDependentObjects())
 				{
-					eagle.error("Failed to create the window size dependent objects.");
+					Debug::throwError("Failed to create the window size dependent objects.");
 
 					return;
 				}
@@ -584,7 +625,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Failed to create the vertex buffer. Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Failed to create the vertex buffer. Error code : " + INT_TO_STRING(result));
 
 					return;
 				}
@@ -596,7 +637,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Failed to create the sampler state. Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Failed to create the sampler state. Error code : " + INT_TO_STRING(result));
 
 					return;
 				}
@@ -622,7 +663,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Failed to create the normal blending state. Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Failed to create the normal blending state. Error code : " + INT_TO_STRING(result));
 
 					return;
 				}
@@ -649,7 +690,7 @@ namespace ProjectEagle
 
 				if(FAILED(result))
 				{
-					eagle.error("Failed to create the additive blending state. Error code : " + INT_TO_STRING(result));
+					Debug::throwError("Failed to create the additive blending state. Error code : " + INT_TO_STRING(result));
 
 					return;
 				}
@@ -670,7 +711,7 @@ namespace ProjectEagle
 
 				if(hr != S_OK)
 				{
-					eagle.outputLogEvent("Direct3D 11 Rasterizer state creation failed with code " + INT_TO_STRING(hr));
+					Debug::outputLogEvent("Direct3D 11 Rasterizer state creation failed with code " + INT_TO_STRING(hr));
 				}
 
 				m_d3dDevice11Context->RSSetState(m_rasterizerState2D);
@@ -685,16 +726,17 @@ namespace ProjectEagle
 				samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 				ID3D11SamplerState *samplerState;
-				graphics.m_d3dDevice11->CreateSamplerState(&samplerDesc, &samplerState);
+				m_d3dDevice11->CreateSamplerState(&samplerDesc, &samplerState);
 
 				m_d3dDevice11Context->PSSetSamplers(0, 1, &samplerState);
 
-				eagle.outputLogEvent("Graphics API configuration complete");
+				Debug::outputLogEvent("Graphics API configuration complete");
 
 				break;
 			}
 		}
 
+		m_camera.setViewportDimensions(Vector2(m_screenWidth, m_screenHeight));
 		m_camera.initialize();
 	}
 
@@ -743,7 +785,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to get the swap chain back buffer. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to get the swap chain back buffer. Error code : " + INT_TO_STRING(result));
 
 			return;
 		}
@@ -754,7 +796,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to create the render target view. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to create the render target view. Error code : " + INT_TO_STRING(result));
 
 			return;
 		}
@@ -777,7 +819,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to create the depth-stencil texture. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to create the depth-stencil texture. Error code : " + INT_TO_STRING(result));
 		}
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC m_depthStencilViewDesc;
@@ -790,7 +832,7 @@ namespace ProjectEagle
 
 		if(FAILED(result))
 		{
-			eagle.error("Failed to create the depth-stencil view. Error code : " + INT_TO_STRING(result));
+			Debug::throwError("Failed to create the depth-stencil view. Error code : " + INT_TO_STRING(result));
 		}
 
 		m_d3dDevice11Context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
@@ -852,10 +894,10 @@ namespace ProjectEagle
 
 	void GraphicsSystem::handleWindowResize()
 	{
-		if(!eagle.isInitialized())
+		/*if(!eagle.isInitialized())
 		{
 			return;
-		}
+		}*/
 
 #ifndef PLATFORM_WP8
 
@@ -908,18 +950,7 @@ namespace ProjectEagle
 
 		m_d3dDevice11Context->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
-//#ifndef PLATFORM_WP8
-//		m_swapChain->Release();
-//		m_renderTargetView->Release();
-//		m_depthStencilView->Release();
-//#endif
-//
-//		while(!createWindowSizeDependentObjects())
-//		{
-//			eagle.sleep(100);
-//		}
-
-		if(console.showing)
+		/*if(console.showing)
 		{
 			if(!console.mainPanelLocked)
 			{
@@ -942,7 +973,7 @@ namespace ProjectEagle
 			{
 				console.informationPanelPosition.y = -console.informationPanelHeight;
 			}
-		}
+		}*/
 
 #endif
 
@@ -954,7 +985,7 @@ namespace ProjectEagle
 
 		while(FAILED(m_swapChain->SetFullscreenState(m_fullscreen, 0)))
 		{
-			eagle.sleep(100);
+			//eagle.sleep(100);
 		}
 
 		return 1;
@@ -969,7 +1000,7 @@ namespace ProjectEagle
 
 #ifndef PLATFORM_WP8
 
-		if(eagle.isInitialized() && !m_multiSamplingEnabled)
+		if(/*eagle.isInitialized() && */!m_multiSamplingEnabled)
 		{
 			m_multiSamplingEnabled = 1;
 
@@ -995,7 +1026,7 @@ namespace ProjectEagle
 
 #ifndef PLATFORM_WP8
 
-		if(eagle.isInitialized() && m_multiSamplingEnabled)
+		if(/*eagle.isInitialized() && */m_multiSamplingEnabled)
 		{
 			m_multiSamplingEnabled = 0;
 
@@ -1023,7 +1054,7 @@ namespace ProjectEagle
 
 		m_multiSamplingEnabled = !m_multiSamplingEnabled;
 
-		if(eagle.isInitialized())
+		if(1/*eagle.isInitialized()*/)
 		{
 			m_swapChain->Release();
 			m_renderTargetView->Release();
@@ -1087,6 +1118,9 @@ namespace ProjectEagle
 
 	}
 
+#define WINDOW_FULLSCREEN_STYLE WS_POPUP | WS_VISIBLE
+#define WINDOW_WINDOWED_STYLE WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+
 	void GraphicsSystem::setWindowResizable(bool value)
 	{
 
@@ -1128,6 +1162,7 @@ namespace ProjectEagle
 				cb.world = XMMatrixTranspose(m_worldMatrix);
 				cb.view = XMMatrixTranspose(m_viewMatrix);
 				cb.projection = XMMatrixTranspose(m_projectionMatrix);
+				cb.currentTime = timer.getPassedTimeSeconds();
 
 				m_d3dDevice11Context->UpdateSubresource(m_texturedVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
 				m_d3dDevice11Context->UpdateSubresource(m_simpleVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
@@ -1153,8 +1188,6 @@ namespace ProjectEagle
 				m_drawCallBuffer[m_drawCallCount] = drawCallData;
 
 				m_drawCallCount++;
-
-				break;
 
 				break;
 			}
@@ -1192,6 +1225,7 @@ namespace ProjectEagle
 				cb.world = XMMatrixTranspose(m_worldMatrix);
 				cb.view = XMMatrixTranspose(m_viewMatrix);
 				cb.projection = XMMatrixTranspose(m_projectionMatrix);
+				cb.currentTime = timer.getPassedTimeSeconds();
 
 				m_d3dDevice11Context->UpdateSubresource(m_texturedVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
 				m_d3dDevice11Context->UpdateSubresource(m_simpleVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
@@ -1216,6 +1250,7 @@ namespace ProjectEagle
 				cb.world = XMMatrixTranspose(m_worldMatrix);
 				cb.view = XMMatrixTranspose(m_viewMatrix);
 				cb.projection = XMMatrixTranspose(m_projectionMatrix);
+				cb.currentTime = timer.getPassedTimeSeconds();
 
 				m_d3dDevice11Context->UpdateSubresource(m_texturedVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
 				m_d3dDevice11Context->UpdateSubresource(m_simpleVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
@@ -1320,9 +1355,9 @@ namespace ProjectEagle
 		RECT windowRectangle;
 
 		windowRectangle.left = 0l;
-		windowRectangle.right = (long)graphics.getScreenWidth();
+		windowRectangle.right = (long)m_screenWidth;
 		windowRectangle.top = 0l;
-		windowRectangle.bottom = (long)graphics.getScreenHeight();
+		windowRectangle.bottom = (long)m_screenHeight;
 
 		dwStyle = GetWindowLong(m_windowHandle, GWL_STYLE);
 
@@ -1407,9 +1442,9 @@ namespace ProjectEagle
 		RECT windowRectangle;
 
 		windowRectangle.left = 0l;
-		windowRectangle.right = (long)graphics.getScreenWidth();
+		windowRectangle.right = (long)m_screenWidth;
 		windowRectangle.top = 0l;
-		windowRectangle.bottom = (long)graphics.getScreenHeight();
+		windowRectangle.bottom = (long)m_screenHeight;
 
 		dwStyle = GetWindowLong(m_windowHandle, GWL_STYLE);
 
@@ -1507,7 +1542,10 @@ namespace ProjectEagle
 
 		setIdentity();
 
+		m_camera.setViewportDimensions(Vector2(m_screenWidth, m_screenHeight));
 		m_camera.update();
+		setViewTransform(m_camera.getViewMatrix());
+		setProjectionTransform(m_camera.getProjectionMatrix());
 
 		return 1;
 	}
@@ -1614,6 +1652,7 @@ namespace ProjectEagle
 				cb.world = XMMatrixTranspose(m_worldMatrix);
 				cb.view = XMMatrixTranspose(m_viewMatrix);
 				cb.projection = XMMatrixTranspose(m_projectionMatrix);
+				cb.currentTime = timer.getPassedTimeSeconds();
 
 				m_d3dDevice11Context->UpdateSubresource(m_texturedVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
 				m_d3dDevice11Context->UpdateSubresource(m_simpleVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
@@ -3196,4 +3235,352 @@ namespace ProjectEagle
 	}
 
 #endif
+
+	ColorValue::ColorValue()
+	{
+		r = 1.0f;
+		g = 1.0f;
+		b = 1.0f;
+		a = 1.0f;
+	}
+
+	ColorValue::ColorValue(float r, float g, float b, float a)
+	{
+		this->r = r;
+		this->g = g;
+		this->b = b;
+		this->a = a;
+	}
+
+	ColorValue::ColorValue(float r, float g, float b)
+	{
+		this->r = r;
+		this->g = g;
+		this->b = b;
+		this->a = 1.0f;
+	}
+
+	ColorValue::ColorValue(DWORD c)
+	{
+		a = COLOR_GET_A(c) / 255.0;
+		r = COLOR_GET_R(c) / 255.0;
+		g = COLOR_GET_G(c) / 255.0;
+		b = COLOR_GET_B(c) / 255.0;
+	}
+
+	void ColorValue::set(float r, float g, float b, float a)
+	{
+		this->r = r;
+		this->g = g;
+		this->b = b;
+		this->a = a;
+	}
+
+	void ColorValue::set(float r, float g, float b)
+	{
+		this->r = r;
+		this->g = g;
+		this->b = b;
+		this->a = 1.0f;
+	}
+
+	ColorValue& ColorValue::operator = (const DWORD &c)
+	{
+		a = COLOR_GET_A(c) / 255.0;
+		r = COLOR_GET_R(c) / 255.0;
+		g = COLOR_GET_G(c) / 255.0;
+		b = COLOR_GET_B(c) / 255.0;
+
+		return *this;
+	}
+
+	Shader::Shader()
+	{
+		isInitialized = 0;
+	}
+
+	Shader::~Shader()
+	{
+	}
+
+	void Shader::compileVertexShaderFromFile(std::string fileAddress)
+	{
+		type = ShaderType_VertexShader;
+
+		WCHAR addressString[1024];
+		AnsiToUnicode((char *)fileAddress.c_str(), addressString, 2048);
+
+		ID3D10Blob *errorData;
+
+		HRESULT result;
+		
+#ifndef PLATFORM_WP8
+		result = D3DCompileFromFile(addressString, 0, 0, "main", "vs_4_0_level_9_3", 0, 0, &shaderData, &errorData);
+#endif
+
+		if(FAILED(result))
+		{
+			if(!errorData)
+			{
+				Debug::throwError("Failed to load " + fileAddress + ". Error code : " + INT_TO_STRING(result));
+			}
+			else
+			{
+				Debug::throwError("Failed to load " + fileAddress + ". " + (char *)errorData->GetBufferPointer());
+			}
+
+			return;
+		}
+
+		/*if(errorData && errorData->GetBufferSize())
+		{
+			Debug::throwMessage((char *)errorData->GetBufferPointer());
+		}*/
+		
+		result = graphics.getD3DDevice11()->CreateVertexShader(shaderData->GetBufferPointer(), shaderData->GetBufferSize(), 0, &vertexShader);
+
+		if(FAILED(result))
+		{
+			Debug::throwError("Failed to load " + fileAddress + ". Error code : " + INT_TO_STRING(result));
+
+			return;
+		}
+
+		dataBuffer = shaderData->GetBufferPointer();
+		dataSize = shaderData->GetBufferSize();
+
+		createInputLayouts();
+
+		D3D11_BUFFER_DESC bd;
+		ZeroMemory(&bd, sizeof(bd));
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth = sizeof(CBChangesEveryFrame);
+		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bd.CPUAccessFlags = 0;
+
+		result = graphics.getD3DDevice11()->CreateBuffer(&bd, 0, &constantBuffer);
+
+		if(FAILED(result))
+		{
+			Debug::throwError("Failed to create the constant buffers. Error code : " + INT_TO_STRING(result));
+		}
+
+		isInitialized = 1;
+	}
+
+	void Shader::compilePixelShaderFromFile(std::string fileAddress)
+	{
+		type = ShaderType_PixelShader;
+
+		WCHAR addressString[1024];
+		AnsiToUnicode((char *)fileAddress.c_str(), addressString, 2048);
+
+		ID3D10Blob *errorData;
+
+		HRESULT result;
+
+#ifndef PLATFORM_WP8
+
+		result = D3DCompileFromFile(addressString, 0, 0, "main", "ps_4_0_level_9_3", 0, 0, &shaderData, &errorData);
+
+#endif
+
+		if(FAILED(result))
+		{
+			if(!errorData)
+			{
+				Debug::throwError("Failed to load " + fileAddress + ". Error code : " + INT_TO_STRING(result));
+			}
+			else
+			{
+				Debug::throwError("Failed to load " + fileAddress + ". " + (char *)errorData->GetBufferPointer());
+			}
+
+			return;
+		}
+
+		/*if(errorData && errorData->GetBufferSize())
+		{
+			Debug::throwMessage((char *)errorData->GetBufferPointer());
+		}*/
+
+		result = graphics.getD3DDevice11()->CreatePixelShader(shaderData->GetBufferPointer(), shaderData->GetBufferSize(), 0, &pixelShader);
+
+		if(FAILED(result))
+		{
+			Debug::throwError("Failed to load " + fileAddress + ". Error code : " + INT_TO_STRING(result));
+
+			return;
+		}
+
+		isInitialized = 1;
+
+		dataBuffer = shaderData->GetBufferPointer();
+		dataSize = shaderData->GetBufferSize();
+	}
+
+	void Shader::loadVertexShaderFromFile(std::string fileAddress)
+	{
+		type = ShaderType_VertexShader;
+
+		FILE *file;
+
+		if(!(file = fopen(fileAddress.c_str(), "rb")))
+		{
+			Debug::throwError("Failed to open " + (string)fileAddress);
+		}
+
+		fseek(file, 0, SEEK_END);
+		int fileSize = ftell(file);
+
+		fseek(file, 0, SEEK_SET);
+
+		char *fileBuffer = new char[fileSize + 1];
+
+		fread(fileBuffer, fileSize, 1, file);
+
+		fclose(file);
+
+		HRESULT result;
+		result = graphics.getD3DDevice11()->CreateVertexShader(fileBuffer, fileSize, 0, &vertexShader);
+
+		if(FAILED(result))
+		{
+			Debug::throwError("Failed to load " + fileAddress + ". Error code : " + INT_TO_STRING(result));
+
+			return;
+		}
+
+		dataBuffer = fileBuffer;
+		dataSize = fileSize;
+
+		createInputLayouts();
+
+		CD3D11_BUFFER_DESC bd;
+		ZeroMemory(&bd, sizeof(bd));
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth = sizeof(CBChangesEveryFrame);
+		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bd.CPUAccessFlags = 0;
+
+		result = graphics.getD3DDevice11()->CreateBuffer(&bd, 0, &constantBuffer);
+
+		if(FAILED(result))
+		{
+			Debug::throwError("Failed to create the constant buffers. Error code : " + INT_TO_STRING(result));
+		}
+
+		isInitialized = 1;
+	}
+
+	void Shader::loadPixelShaderFromFile(std::string fileAddress)
+	{
+		type = ShaderType_PixelShader;
+
+		FILE *file;
+
+		if(!(file = fopen(fileAddress.c_str(), "rb")))
+		{
+			Debug::throwError("Failed to open " + (string)fileAddress);
+		}
+		
+		fseek(file, 0, SEEK_END);
+		int fileSize = ftell(file);
+
+		fseek(file, 0, SEEK_SET);
+
+		char *fileBuffer = new char[fileSize + 1];
+
+		fread(fileBuffer, fileSize, 1, file);
+
+		fclose(file);
+
+		HRESULT result;
+		result = graphics.getD3DDevice11()->CreatePixelShader(fileBuffer, fileSize, 0, &pixelShader);
+
+		if(FAILED(result))
+		{
+			Debug::throwError("Failed to load " + fileAddress + ". Error code : " + INT_TO_STRING(result));
+
+			return;
+		}
+
+		isInitialized = 1;
+
+		dataBuffer = fileBuffer;
+		dataSize = fileSize;
+	}
+
+	void Shader::createInputLayouts()
+	{
+		D3D11_INPUT_ELEMENT_DESC inputElementDesc0[] =
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		};
+
+		HRESULT result = graphics.getD3DDevice11()->CreateInputLayout(inputElementDesc0, 3, dataBuffer, dataSize, &inputLayout);
+
+		if(FAILED(result))
+		{
+			Debug::throwError("Failed to create the vertex input layout. Error code : " + INT_TO_STRING(result));
+
+			return;
+		}
+	}
+
+	Texture::Texture()
+	{
+		m_type = RESOURCE_TEXTURE;
+
+		m_d3dTexture11 = 0;
+	}
+
+	Texture::~Texture()
+	{
+	}
+
+	void Texture::lock()
+	{
+	}
+
+	void Texture::unlock()
+	{
+	}
+
+	DWORD Texture::getPixelColor(int x, int y)
+	{
+
+		return 0;
+	}
+
+	void Texture::releaseData()
+	{
+		if(m_loaded)
+		{
+			if(m_shaderResourceView)
+			{
+				m_shaderResourceView->Release();
+				m_shaderResourceView = 0;
+			}
+
+			m_loaded = 0;
+		}
+	}
+
+	int Texture::getWidth()
+	{
+		return m_width;
+	}
+
+	int Texture::getHeight()
+	{
+		return m_height;
+	}
+
+	Vector2 Texture::getDimensions()
+	{
+		return Vector2(m_width, m_height);
+	}
 };

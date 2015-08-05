@@ -912,21 +912,21 @@ namespace EagleScriptCompiler
 
 	void throwCodeError(std::string errorMessage)
 	{
-		eagle.outputLogEvent("");
+		Debug::outputLogEvent("");
 
-		eagle.outputLogEvent((char *)((string)"EagleScript Error : " + (string)errorMessage).c_str());
-		eagle.outputLogEvent((char *)("Line : " + INT_TO_STRING(getCurrentSourceLineIndex() + 1)).c_str());
+		Debug::outputLogEvent((char *)((string)"EagleScript Error : " + (string)errorMessage).c_str());
+		Debug::outputLogEvent((char *)("Line : " + INT_TO_STRING(getCurrentSourceLineIndex() + 1)).c_str());
 
 		char sourceLineString[ES_MAX_SOURCE_LINE_LENGTH];
 
 		char *currentSourceLine = getCurrentSourceLine();
 		if(currentSourceLine)
 		{
-			eagle.outputLogEvent(currentSourceLine);
+			Debug::outputLogEvent(currentSourceLine);
 		}
 
 		console.print("EagleScript Error : " + errorMessage, ConsoleOutput_Warning);
 
-		//eagle.error(errorMessage + " in line " + INT_TO_STRING(getCurrentSourceLineIndex() + 1));
+		//Debug::throwError(errorMessage + " in line " + INT_TO_STRING(getCurrentSourceLineIndex() + 1));
 	}
 };
