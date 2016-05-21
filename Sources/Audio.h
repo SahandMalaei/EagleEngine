@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 
+#include "Helpers.h"
+#include "Camera.h"
+
 #define TONE_SINE 0
 #define TONE_SQUARE 1
 #define TONE_SAWUP 2
@@ -22,8 +25,6 @@ struct FMOD_DSP;
 
 namespace ProjectEagle
 {
-	class Vector3;
-
 	class SoundSample
     {
     private:

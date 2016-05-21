@@ -1,11 +1,13 @@
-#include "Eagle.h"
+#include "Audio.h"
+
+#include "Debug.h"
+#include "Graphics.h"
 
 #ifndef PLATFORM_WP8
 	#include <Include/FMOD/Windows/fmod.hpp>
 #else
 	#include <Include/FMOD/Windows Phone/fmod.hpp>
 #endif
-
 
 namespace ProjectEagle
 {

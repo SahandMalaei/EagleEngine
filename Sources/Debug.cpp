@@ -31,7 +31,6 @@ namespace Debug
 
 	void throwError(std::string messageString, std::string title)
 	{
-
 #ifdef PLATFORM_WP8
 
 		OutputDebugString((messageString + "\n").c_str());

@@ -56,6 +56,8 @@ namespace ProjectEagle
 		DirectX::XMMATRIX projection;
 
 		float currentTime;
+
+		float screenWidth, screenHeight;
 	};
 
 	struct DrawCallData;
@@ -524,7 +526,7 @@ namespace ProjectEagle
 		void fillPlane(float x1, float y1, float x2, float y2, int depth0, int depth1, ColorValue color);
 		void fillPlane(Vector2 pos0, Vector2 pos1, int depth0, int depth1, ColorValue color){fillPlane(pos0.x, pos0.y, pos1.x, pos1.y, depth0, depth1, color);}
 
-		void renderCube(Vector3 topLeftBack, Vector3 bottomRightFront, ColorValue color);
+		void renderCube(const Vector3 &topLeftBack, const Vector3 &bottomRightFront, const ColorValue &color);
 
 #ifdef PLATFORM_WP8
 

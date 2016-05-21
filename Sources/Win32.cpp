@@ -99,7 +99,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return 0;
 	}
 
-	Debug::outputLogEvent("Preload function has returned successfully");
+	Debug::outputLogEvent("Preload function returned successfully");
 
 	char title[255];
 	sprintf(title, "%s", eagle.getAppTitle().c_str());

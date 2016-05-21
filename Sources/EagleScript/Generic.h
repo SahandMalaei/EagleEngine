@@ -3,6 +3,12 @@
 
 #include <string>
 
+#define FLOAT_TO_STRING(s) std::to_string((long float)s)
+#define LONG_TO_STRING(s) std::to_string((long)s)
+#define INT_TO_STRING(s) std::to_string((int)s)
+
+#define IS_STRING_VALID(s) (std::string(s).length())
+
 namespace EagleScript
 {
 	struct LinkedListNode
@@ -58,6 +64,19 @@ namespace EagleScript
 	{
 		type head, tail;
 	};
+
+	bool isCharNumeric(char c);
+	bool isCharAlphabetic(char c);
+	bool isCharWhitespace(char c);
+	bool isCharDelimiter(char c);
+
+	bool isStringInt(std::string s);
+	bool isStringFloat(std::string s);
+	bool isStringAlphabetic(std::string s);
+	bool isStringWhitespace(std::string s);
+	bool isStringValidIdentifier(std::string s);
+
+	bool approximateEquals(float x, float y, float threshold = 0.0001);
 
 	// Debugging and Error handling
 

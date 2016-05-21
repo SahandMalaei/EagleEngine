@@ -6,9 +6,9 @@
 #include <WinSock2.h>
 #include <Windows.h>
 
-#define FLOAT_TO_STRING(s) to_string((long float)s)
-#define LONG_TO_STRING(s) to_string((long)s)
-#define INT_TO_STRING(s) to_string((int)s)
+#define FLOAT_TO_STRING(s) std::to_string((long float)s)
+#define LONG_TO_STRING(s) std::to_string((long)s)
+#define INT_TO_STRING(s) std::to_string((int)s)
 
 #define IS_STRING_VALID(s) (std::string(s).length())
 
@@ -292,17 +292,6 @@ namespace ProjectEagle
 		Color_Yellow = 0xFFFFFF00,
 		Color_YellowGreen = 0xFF9ACD32
 	};
-
-	bool isCharNumeric(char c);
-	bool isCharAlphabetic(char c);
-	bool isCharWhitespace(char c);
-	bool isCharDelimiter(char c);
-
-	bool isStringInt(std::string s);
-	bool isStringFloat(std::string s);
-	bool isStringAlphabetic(std::string s);
-	bool isStringWhitespace(std::string s);
-	bool isStringValidIdentifier(std::string s);
 
 	BOOL WINAPI AnsiToUnicode(LPSTR ansiString, LPWSTR unicodeBuffer, DWORD unicodeBufferSize);
 	BOOL WINAPI UnicodeToAnsi(LPWSTR unicodeString, LPSTR  ansiBuffer, DWORD ansiBufferSize);

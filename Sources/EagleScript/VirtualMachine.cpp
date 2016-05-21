@@ -1,5 +1,7 @@
 #include "EagleScript.h"
 
+#include <unordered_map>
+
 using namespace EagleScript;
 
 //#define copyOperandValue(a, b) memcpy(a, b, sizeof(RuntimeValue))
@@ -9,6 +11,14 @@ using namespace EagleScript;
 #define RESOLVE_OPERAND_AS_FLOAT(operandIndex) coerceValueToFloat(resolveOperandValue(operandIndex))
 #define RESOLVE_OPERAND_AS_STRING(operandIndex) coerceValueToString(resolveOperandValue(operandIndex))
 #define RESOLVE_OPERAND_AS_INSTRUCTION_INDEX(operandIndex) resolveOperandValue(operandIndex)->instructionIndex
+
+#ifndef PLATFORM_WP8
+	const int EAGLE_DEFAULT_FRAME_RATE = 60;
+#else
+	const int EAGLE_DEFAULT_FRAME_RATE = 60;
+#endif
+
+#define EAGLE_DEFAULT_FRAME_TIME (1.0 / EAGLE_DEFAULT_FRAME_RATE)
 
 namespace EagleVirtualMachine
 {
@@ -1397,7 +1407,7 @@ namespace EagleVirtualMachine
 					break;
 
 				case EASM_OPERAND_TYPE_FLOAT:
-					if(math.approximateEquals(value0->floatLiteral, coerceValueToFloat(value1))) jump = 1;
+					if(approximateEquals(value0->floatLiteral, coerceValueToFloat(value1))) jump = 1;
 
 					break;
 
@@ -1427,7 +1437,7 @@ namespace EagleVirtualMachine
 					break;
 
 				case EASM_OPERAND_TYPE_FLOAT:
-					if(!math.approximateEquals(value0->floatLiteral, coerceValueToFloat(value1))) jump = 1;
+					if(!approximateEquals(value0->floatLiteral, coerceValueToFloat(value1))) jump = 1;
 
 					break;
 
@@ -1838,7 +1848,7 @@ namespace EagleVirtualMachine
 
 	void EagleScriptVirtualMachine::updateScripts()
 	{
-		float frameTime = eagle.getFrameTime();
+		float frameTime = EAGLE_DEFAULT_FRAME_TIME;
 
 		ScriptFunctionParameter parameterList[1];
 		parameterList[0].type = SCRIPT_PARAMETER_TYPE_FLOAT;

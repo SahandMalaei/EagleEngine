@@ -262,7 +262,7 @@ namespace EagleScriptCompiler
 			break;
 
 		case ES_OPERAND_TYPE_FLOAT:
-			if(!math.approximateEquals(floatLiteral,operand.floatLiteral))
+			if(!approximateEquals(floatLiteral, operand.floatLiteral))
 			{
 				return 0;
 			}

@@ -1163,6 +1163,8 @@ namespace ProjectEagle
 				cb.view = XMMatrixTranspose(m_viewMatrix);
 				cb.projection = XMMatrixTranspose(m_projectionMatrix);
 				cb.currentTime = timer.getPassedTimeSeconds();
+				cb.screenWidth = m_screenWidth;
+				cb.screenHeight = m_screenHeight;
 
 				m_d3dDevice11Context->UpdateSubresource(m_texturedVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
 				m_d3dDevice11Context->UpdateSubresource(m_simpleVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
@@ -1226,6 +1228,8 @@ namespace ProjectEagle
 				cb.view = XMMatrixTranspose(m_viewMatrix);
 				cb.projection = XMMatrixTranspose(m_projectionMatrix);
 				cb.currentTime = timer.getPassedTimeSeconds();
+				cb.screenWidth = m_screenWidth;
+				cb.screenHeight = m_screenHeight;
 
 				m_d3dDevice11Context->UpdateSubresource(m_texturedVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
 				m_d3dDevice11Context->UpdateSubresource(m_simpleVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
@@ -1251,6 +1255,8 @@ namespace ProjectEagle
 				cb.view = XMMatrixTranspose(m_viewMatrix);
 				cb.projection = XMMatrixTranspose(m_projectionMatrix);
 				cb.currentTime = timer.getPassedTimeSeconds();
+				cb.screenWidth = m_screenWidth;
+				cb.screenHeight = m_screenHeight;
 
 				m_d3dDevice11Context->UpdateSubresource(m_texturedVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
 				m_d3dDevice11Context->UpdateSubresource(m_simpleVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
@@ -1610,11 +1616,14 @@ namespace ProjectEagle
 					m_frameVertexBuffer[vertexStartLocation + j].x -= 1;
 					m_frameVertexBuffer[vertexStartLocation + j].y /= negativeHalfScreenHeight;
 					m_frameVertexBuffer[vertexStartLocation + j].y += 1;
+					/*m_frameVertexBuffer[vertexStartLocation + j].x -= (1.0f - aspectRatio) * halfScreenHeight;
+					m_frameVertexBuffer[vertexStartLocation + j].z *= halfScreenHeight;*/
 				}
 				else
 				{
-					m_frameVertexBuffer[vertexStartLocation + j].x /= halfScreenHeight;
+					// Moved inside vertex shader
 					m_frameVertexBuffer[vertexStartLocation + j].x -= aspectRatio;
+					m_frameVertexBuffer[vertexStartLocation + j].x /= halfScreenHeight;
 					m_frameVertexBuffer[vertexStartLocation + j].y /= negativeHalfScreenHeight;
 					m_frameVertexBuffer[vertexStartLocation + j].y += 1;
 					m_frameVertexBuffer[vertexStartLocation + j].z /= halfScreenHeight;
@@ -1653,6 +1662,8 @@ namespace ProjectEagle
 				cb.view = XMMatrixTranspose(m_viewMatrix);
 				cb.projection = XMMatrixTranspose(m_projectionMatrix);
 				cb.currentTime = timer.getPassedTimeSeconds();
+				cb.screenWidth = m_screenWidth;
+				cb.screenHeight = m_screenHeight;
 
 				m_d3dDevice11Context->UpdateSubresource(m_texturedVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
 				m_d3dDevice11Context->UpdateSubresource(m_simpleVertexShader.constantBuffer, 0, nullptr, &cb, 0, 0);
@@ -3005,21 +3016,21 @@ namespace ProjectEagle
 		drawPrimitive(v, 2, PrimitiveType_TriangleStrip);
 	}
 
-	void GraphicsSystem::renderCube(Vector3 topLeftBack, Vector3 bottomRightFront, ColorValue color)
+	void GraphicsSystem::renderCube(const Vector3 &topLeftBack, const Vector3 &bottomRightFront, const ColorValue &color)
 	{
 		int sideIndex = 0;
 
-		float top = topLeftBack.y;
-		float bottom = bottomRightFront.y;
-		float left = topLeftBack.x;
-		float right = bottomRightFront.x;
-		float back = topLeftBack.z;
-		float front = bottomRightFront.z;
+		const float &top = topLeftBack.y;
+		const float &bottom = bottomRightFront.y;
+		const float &left = topLeftBack.x;
+		const float &right = bottomRightFront.x;
+		const float &back = topLeftBack.z;
+		const float &front = bottomRightFront.z;
 
-		float tu0 = m_textureTopLeft.x;
-		float tv0 = m_textureTopLeft.y;
-		float tu1 = m_textureBottomRight.x;
-		float tv1 = m_textureBottomRight.y;
+		float &tu0 = m_textureTopLeft.x;
+		float &tv0 = m_textureTopLeft.y;
+		float &tu1 = m_textureBottomRight.x;
+		float &tv1 = m_textureBottomRight.y;
 
 		float x1 = left;
 		float x2 = left;

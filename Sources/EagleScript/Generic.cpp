@@ -1,5 +1,6 @@
 #include "Generic.h"
-#include "../Eagle.h"
+
+#include "../Debug.h"
 
 namespace EagleScript
 {
@@ -314,6 +315,172 @@ namespace EagleScript
 		elementList.cleanup();
 	}
 
+	bool isCharNumeric(char c)
+	{
+		if(c > '0' - 1 && c < '9' + 1) return 1;
+
+		return 0;
+	}
+
+	bool isCharAlphabetic(char c)
+	{
+		if((c > 'a' - 1 && c < 'z' + 1) || (c > 'A' - 1 && c < 'Z' + 1)) return 1;
+
+		return 0;
+	}
+
+	bool isCharWhitespace(char c)
+	{
+		if(c == ' ' || c == '\t' || c == '\n') return 1;
+
+		return 0;
+	}
+
+	bool isCharDelimiter(char c)
+	{
+		if(c == ';' || c == ':' || c == ',' || c == '"' || c == '[' || c == ']' || c == '{' || c == '}' || c == '(' || c == ')' || isCharWhitespace(c)) return 1;
+
+		return 0;
+	}
+
+	bool isStringInt(std::string s)
+	{
+		if(!IS_STRING_VALID(s))
+		{
+			return 0;
+		}
+
+		if(!isCharNumeric(s[0]) && s[0] != '-')
+		{
+			return 0;
+		}
+
+		int stringLength = s.length();
+
+		for(int i = 1; i < stringLength; ++i)
+		{
+			if(!isCharNumeric(s[i]))
+			{
+				return 0;
+			}
+		}
+
+		return 1;
+	}
+
+	bool isStringFloat(std::string s)
+	{
+		if(!IS_STRING_VALID(s))
+		{
+			return 0;
+		}
+
+		if(!isCharNumeric(s[0]) && s[0] != '-')
+		{
+			return 0;
+		}
+
+		bool radixPointFound = 0;
+
+		int stringLength = s.length();
+
+		for(int i = 1; i < stringLength; ++i)
+		{
+			if(isCharNumeric(s[i]))
+			{
+				continue;
+			}
+			else if(s[i] == '.' && !radixPointFound)
+			{
+				radixPointFound = 1;
+				continue;
+			}
+
+			return 0;
+		}
+
+		if(radixPointFound)
+		{
+			return 1;
+		}
+		
+		return 0;
+	}
+
+	bool isStringAlphabetic(std::string s)
+	{
+		if(!IS_STRING_VALID(s))
+		{
+			return 0;
+		}
+
+		int stringLength = s.length();
+
+		for(int i = 0; i < stringLength; ++i)
+		{
+			if(!isCharAlphabetic(s[i])) return 0;
+		}
+
+		return 1;
+	}
+
+	bool isStringWhitespace(std::string s)
+	{
+		if(!IS_STRING_VALID(s))
+		{
+			return 0;
+		}
+
+		int stringLength = s.length();
+
+		for(int i = 0; i < stringLength; ++i)
+		{
+			if(!isCharWhitespace(s[i]))
+			{
+				return 0;
+			}
+		}
+
+		return 1;
+	}
+
+	bool isStringValidIdentifier(std::string s)
+	{
+		if(!IS_STRING_VALID(s))
+		{
+			return 0;
+		}
+
+		if(!isCharAlphabetic(s[0]))
+		{
+			return 0;
+		}
+
+		int stringLength = s.length();
+
+		for(int i = 1; i < stringLength; ++i)
+		{
+			if(!isCharNumeric(s[i]) && !isCharAlphabetic(s[i]) && s[i] != '_')
+			{
+				return 0;
+			}
+		}
+
+		return 1;
+	}
+
+	bool approximateEquals(float x, float y, float threshold)
+	{
+		if(x + threshold > y && x - threshold < y)
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
 	// Debugging and Error handling
 
 	void message(std::string text)
@@ -323,16 +490,22 @@ namespace EagleScript
 			_sleep(300);
 		}*/
 
-		cout << text << "\n";
+		//cout << text << "\n";
+
+		Debug::throwMessage(text);
 	}
 
 	void debugMessage(std::string text)
 	{
-		cout << "Debug : " << text << "\n";
+		//cout << "Debug : " << text << "\n";
+
+		Debug::outputLogEvent(text);
 	}
 
 	void throwError(std::string text)
 	{
-		console.print("Error : " + text, ConsoleOutput_Warning);
+		//console.print("Error : " + text, ConsoleOutput_Warning);
+
+		Debug::throwError(text);
 	}
 };

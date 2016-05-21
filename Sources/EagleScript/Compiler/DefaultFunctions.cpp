@@ -2,6 +2,7 @@
 
 using namespace EagleScript;
 using namespace EagleVirtualMachine;
+using namespace ProjectEagle;
 
 namespace EagleScriptCompiler
 {

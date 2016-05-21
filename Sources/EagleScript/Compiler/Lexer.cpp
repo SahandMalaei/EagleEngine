@@ -925,7 +925,7 @@ namespace EagleScriptCompiler
 			Debug::outputLogEvent(currentSourceLine);
 		}
 
-		console.print("EagleScript Error : " + errorMessage, ConsoleOutput_Warning);
+		//console.print("EagleScript Error : " + errorMessage, ConsoleOutput_Warning);
 
 		//Debug::throwError(errorMessage + " in line " + INT_TO_STRING(getCurrentSourceLineIndex() + 1));
 	}

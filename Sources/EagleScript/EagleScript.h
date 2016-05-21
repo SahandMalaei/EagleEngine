@@ -8,12 +8,11 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
-#include "../Eagle.h"
-
-using namespace ProjectEagle;
+#include "../Debug.h"
 
 #include "Generic.h"
 #include "Assembler.h"

@@ -1,5 +1,7 @@
 #include "../EagleScript.h"
 
+#include <time.h>
+
 using namespace EagleScript;
 
 namespace EagleScriptCompiler
@@ -1321,6 +1323,18 @@ namespace EagleScriptCompiler
 		return operand;
 	}
 
+	float power(float number, int power)
+	{
+		float c = 1;
+
+		for(int i = 0; i < power; ++i)
+		{
+			c *= number;
+		}
+
+		return c;
+	}
+
 	ICodeOperand precomputeExponent(ICodeOperand operand0, ICodeOperand operand1)
 	{
 		ICodeOperand operand;
@@ -1343,22 +1357,22 @@ namespace EagleScriptCompiler
 		{
 			if(operand.type == ES_OPERAND_TYPE_FLOAT)
 			{
-				operand.floatLiteral = math.power(operand.floatLiteral, operand1.floatLiteral);
+				operand.floatLiteral = power(operand.floatLiteral, operand1.floatLiteral);
 			}
 			else
 			{
-				operand.integerLiteral = math.power(operand.integerLiteral, operand1.floatLiteral);
+				operand.integerLiteral = power(operand.integerLiteral, operand1.floatLiteral);
 			}
 		}
 		else if(operand1.type == ES_OPERAND_TYPE_INT)
 		{
 			if(operand.type == ES_OPERAND_TYPE_FLOAT)
 			{
-				operand.floatLiteral = math.power(operand.floatLiteral, operand1.integerLiteral);
+				operand.floatLiteral = power(operand.floatLiteral, operand1.integerLiteral);
 			}
 			else
 			{
-				operand.integerLiteral = math.power(operand.integerLiteral, operand1.integerLiteral);
+				operand.integerLiteral = power(operand.integerLiteral, operand1.integerLiteral);
 			}
 		}
 

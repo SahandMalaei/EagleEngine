@@ -200,8 +200,14 @@ namespace ProjectEagle
 
 	bool MathSystem::approximateEquals(float x, float y, float threshold)
 	{
-		if(x + threshold > y && x - threshold < y) return 1;
-		else return 0;
+		if(x + threshold > y && x - threshold < y)
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 
 	float MathSystem::weightedAverage(float number0, float number1, float weight)

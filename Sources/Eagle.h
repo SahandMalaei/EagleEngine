@@ -18,19 +18,8 @@
 
 	#include "WP8.h"
 #else
-	#include "winmain.h"
+	#include "Win32.h"
 #endif
-
-/*#pragma comment(lib, "winmm.lib")
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "dinput8.lib")
-#pragma comment(lib, "lib/x86/d3dx11.lib")
-#pragma comment(lib, "fmodex_vc.lib")
-#pragma comment(lib, "Box2D.lib")
-#pragma comment(lib, "DirectXTK.lib")*/
 
 using namespace std;
 
@@ -55,9 +44,8 @@ using namespace std;
 #include "ParticleSystem.h"
 #include "Light.h"
 #include "Mesh.h"
-#include "EagleScript/EagleScript.h"
-
 #include "EntitySystem/EntitySystem.h"
+#include "EagleScript/EagleScript.h"
 
 using namespace ProjectEagle;
 

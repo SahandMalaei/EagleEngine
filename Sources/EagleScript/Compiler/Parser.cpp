@@ -1,5 +1,7 @@
 #include "../EagleScript.h"
 
+#include <unordered_map>
+
 using namespace EagleScript;
 
 #define ES_LOOP_WHILE 0
