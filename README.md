@@ -1,6 +1,6 @@
 # Eagle Engine
 
-**Eagle engine** is a lightweight game engine for creating games using **C++** and **[EagleScript][]**, created for facilitating the process of making games for the Windows and Windows Phone platforms.
+**Eagle engine** is a lightweight game engine for creating games using **C++** and **[EagleScript][]**, created to facilitate the process of making games for the **Windows** and **Windows Phone** platforms.
 
 ## Features
 
