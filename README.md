@@ -1,6 +1,6 @@
 # Eagle Engine
 
-Eagle engine is a lightweight game engine for creating games using C++ and [EagleScript][], created for facilitating the process of making games for the Windows and Windows Phone platforms.
+**Eagle engine** is a lightweight game engine for creating games using **C++** and **[EagleScript][]**, created for facilitating the process of making games for the Windows and Windows Phone platforms.
 
 ## Features
 
@@ -26,8 +26,8 @@ Eagle engine is a lightweight game engine for creating games using C++ and [Eagl
 
 #### Supported Platforms
 
-- Windows (7 and higher) (x86/x64)
-- Windows Phone 8
+- **Windows** (7 and higher) (x86/x64)
+- **Windows Phone 8**
 
 ## Development Status
 
@@ -49,8 +49,8 @@ At the time of development it was particularly significant for the developer bec
 
 ## Libraries used
 
-- [Direct3D 11][Direct3D 11] for graphics rendering
-- [FMOD Ex][FMOD Ex] for the audio system
+- **[Direct3D 11][Direct3D 11]** for graphics rendering
+- **[FMOD Ex][FMOD Ex]** for the audio system
 
 [EagleScript]: https://github.com/SahandMalaei/EagleScript "EagleScript"
 [Direct3D 11]: https://msdn.microsoft.com/en-us/library/windows/desktop/ff476080(v=vs.85).aspx "Direct3D 11"
